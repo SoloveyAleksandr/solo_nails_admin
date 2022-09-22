@@ -1,24 +1,25 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import AppRouter from "./AppRouter";
+import { setMonth, setYear } from "./store";
+import { useAppDispatch } from "./store/hooks";
+import { useEffect } from 'react';
+import BGContainer from "./components/BGContainer/BGContainer";
+import Spiner from "./components/Spiner/Spiner";
 
 function App() {
+  const reduxDispatch = useAppDispatch();
+  useEffect(() => {
+    const currentMonth = new Date().getMonth() + 1;
+    const currentYear = new Date().getFullYear();
+    reduxDispatch(setMonth(currentMonth));
+    reduxDispatch(setYear(currentYear));
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Spiner />
+      <BGContainer>
+        <AppRouter />
+      </BGContainer>
     </div>
   );
 }
