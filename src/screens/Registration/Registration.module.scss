@@ -25,25 +25,27 @@
   background-color: rgba(255, 255, 255, 0.5);
   outline: none;
   border: 2px solid rgba(255, 255, 255, 0.5);
-  padding: 0 15px 0 50px;
+  padding: 0 15px 0 15px;
   font-weight: 600;
   color: rgb(30, 30, 30);
   font-size: 16px;
+  &.phone {
+    padding: 0 15px 0 50px;
+  }
 
   &Wrapper {
     width: 100%;
     margin-bottom: 15px;
     position: relative;
+  }
 
-    &::before {
-      content: '+375';
-      position: absolute;
-      top: 39px;
-      left: 9px;
-      font-weight: 700;
-      color: rgb(30, 30, 30);
-      font-size: 16px;
-    }
+  &Prefix {
+    position: absolute;
+    top: 39px;
+    left: 9px;
+    font-weight: 700;
+    color: rgb(30, 30, 30);
+    font-size: 16px;
   }
 
   &Label {

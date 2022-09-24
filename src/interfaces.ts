@@ -65,3 +65,8 @@ export interface IHistoryItem {
   },
   status: 'await' | 'success' | 'canceled',
 }
+
+export interface ICustomWindow extends Window {
+  recaptchaVerifier: any;
+  hellow: any;
+}

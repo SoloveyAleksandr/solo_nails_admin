@@ -6,16 +6,18 @@ interface IDefaultBtn {
   type: "button" | "reset" | "submit";
   value: string;
   handleClick?: () => void;
+  disabled?: boolean
 }
 
 const DefaultBtn: FC<IDefaultBtn> = ({
   type = 'button',
   value,
-  handleClick
+  handleClick,
+  disabled = false,
 }) => {
   return (
     <button
-      className={styles.btn}
+      className={disabled ? `${styles.btn} ${styles.disabled}` : styles.btn}
       type={type}
       onClick={handleClick}>
       {value}

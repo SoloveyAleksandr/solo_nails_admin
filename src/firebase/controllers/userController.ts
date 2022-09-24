@@ -2,13 +2,14 @@ import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, si
 import { collection, deleteField, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { IHistoryItem, ITimeItem } from "../../interfaces";
 import { useAppDispatch } from "../../store/hooks";
-import { app, DB } from "../firebase";
+import { app, authentification, DB } from "../firebase";
 import { History, User, userConverter } from "../services/userService";
 import useReserve from "./reserveController";
 
 export default function useAuth() {
     const reduxDispatch = useAppDispatch();
-    const auth = getAuth(app);
+    const auth = authentification;
+
     const userRef = collection(DB, "user");
     const dayRef = collection(DB, 'day');
 
