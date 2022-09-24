@@ -1,8 +1,8 @@
 import { configureStore, createSlice } from '@reduxjs/toolkit';
 import { IDayItem, ISelectedDate } from '../interfaces';
 
-const month: number = 1;
-const year: number = 2022;
+const month: number = 0;
+const year: number = 0;
 const selectedDate: ISelectedDate = {
   full: '',
   formate: '',

@@ -1,17 +1,26 @@
 import AppRouter from "./AppRouter";
-import { setMonth, setYear } from "./store";
-import { useAppDispatch } from "./store/hooks";
+import { setLoading, setMonth, setSelectedMonth, setYear } from "./store";
+import { useAppDispatch, useAppSelector } from "./store/hooks";
 import { useEffect } from 'react';
 import BGContainer from "./components/BGContainer/BGContainer";
 import Spiner from "./components/Spiner/Spiner";
+import { IDayItem } from "./interfaces";
+import axios from 'axios';
+import { getMonth } from "./screens/Calendar/CalendarService";
 
 function App() {
   const reduxDispatch = useAppDispatch();
+  const appState = useAppSelector(state => state.AppStore);
+
   useEffect(() => {
-    const currentMonth = new Date().getMonth() + 1;
-    const currentYear = new Date().getFullYear();
-    reduxDispatch(setMonth(currentMonth));
-    reduxDispatch(setYear(currentYear));
+    (async () => {
+      reduxDispatch(setLoading(true));
+      const dateInfo = await getMonth(appState.month, appState.year);
+      reduxDispatch(setMonth(dateInfo.month));
+      reduxDispatch(setYear(dateInfo.year));
+      reduxDispatch(setSelectedMonth(dateInfo.calendarDays));
+      reduxDispatch(setLoading(false));
+    })()
   }, []);
 
   return (

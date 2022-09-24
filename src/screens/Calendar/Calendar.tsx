@@ -7,11 +7,12 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import MenuBtn from '../../components/MenuBtn/MenuBtn';
 import Logo from '../../components/Logo/Logo';
 import Menu from '../../components/Menu/Menu';
-import { ISelectedDate } from '../../interfaces';
+import { IDayItem, ISelectedDate } from '../../interfaces';
 import { getMonth } from './CalendarService';
 import CalendarDay from '../../components/CalendarDay/CalendarDay';
 
 import styles from './Calendar.module.scss';
+import axios from 'axios';
 
 interface ICalendar { };
 
@@ -21,15 +22,14 @@ const Calendar: FC<ICalendar> = () => {
   const [menuIsActive, setMenuIsActive] = useState(false);
 
   useEffect(() => {
-    const currentMonth = getMonth(appState.month, appState.year);
-    reduxDispatch(setSelectedMonth(currentMonth));
-  }, []);
-
-  useEffect(() => {
-    reduxDispatch(setLoading(true));
-    const currentMonth = getMonth(appState.month, appState.year);
-    reduxDispatch(setSelectedMonth(currentMonth));
-    reduxDispatch(setLoading(false));
+    (async () => {
+      reduxDispatch(setLoading(true));
+      const dateInfo = await getMonth(appState.month, appState.year);
+      reduxDispatch(setMonth(dateInfo.month));
+      reduxDispatch(setYear(dateInfo.year));
+      reduxDispatch(setSelectedMonth(dateInfo.calendarDays));
+      reduxDispatch(setLoading(false));
+    })()
   }, [appState.month]);
 
   const setDate = (date: ISelectedDate) => reduxDispatch(setSelectedDate(date));
