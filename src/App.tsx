@@ -4,8 +4,6 @@ import { useAppDispatch, useAppSelector } from "./store/hooks";
 import { useEffect } from 'react';
 import BGContainer from "./components/BGContainer/BGContainer";
 import Spiner from "./components/Spiner/Spiner";
-import { IDayItem } from "./interfaces";
-import axios from 'axios';
 import { getMonth } from "./screens/Calendar/CalendarService";
 import { ChakraProvider } from "@chakra-ui/react";
 import { authentification } from "./firebase/firebase";

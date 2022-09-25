@@ -2,13 +2,15 @@ import React, { FC, useState } from "react";
 import { Input, InputGroup, InputLeftAddon, IconButton } from '@chakra-ui/react';
 import { InfoIcon } from "@chakra-ui/icons";
 import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverHeader,
+  PopoverBody,
+  PopoverFooter,
+  PopoverArrow,
+  PopoverCloseButton,
+  PopoverAnchor,
 } from '@chakra-ui/react'
 
 import styles from './FormInput.module.scss';
@@ -32,63 +34,45 @@ const FormInput: FC<IFormInput> = ({
   addon,
   info,
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <>
-      <InputGroup w={'100%'}>
-        <label className={styles.label}>
-          <span className={styles.title}>
-            {title}
-          </span>
-          {info &&
-            // <IconButton
-            //   aria-label="info about input"
-            //   icon={<InfoIcon />}
-            //   className={styles.infoBtn} />
-            <button
-              className={styles.infoBtn}
-              onClick={() => setIsOpen(true)}>
-              <InfoIcon />
-            </button>
-          }
-          <div className={styles.inputWrapper}>
-            {addon &&
-              <InputLeftAddon
-                children='+375'
-                className={styles.phoneAddon} />}
-            <Input
-              className={addon ? `${styles.input} ${styles.addon}` : styles.input}
-              placeholder={placeholder}
-              value={value}
-              onChange={e => onChange(e)} />
-          </div>
-        </label>
-      </InputGroup>
-      {info &&
-        <Container>
-          <Modal
-            onClose={() => setIsOpen(false)}
-            isOpen={isOpen}
-            isCentered>
-            <ModalOverlay />
-            <ModalContent w={'calc(100% - 30px)'}>
-              <ModalHeader />
-              <ModalCloseButton />
-              <ModalBody>
-                <p className={styles.infoText}>{info}</p>
-              </ModalBody>
-              <ModalFooter>
-                <DefaultBtn
-                  type={'button'}
-                  value="понятно"
-                  handleClick={() => setIsOpen(false)} />
-              </ModalFooter>
-            </ModalContent>
-          </Modal>
-        </Container>
-      }
-    </>
+    <InputGroup w={'100%'}>
+      <label className={styles.label}>
+        <span className={styles.title}>
+          {title}
+        </span>
+        {info &&
+          <Popover placement='auto-start'>
+            <PopoverTrigger>
+              <button
+                type="button"
+                className={styles.infoBtn}>
+                <InfoIcon />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent>
+              <PopoverArrow />
+              <PopoverCloseButton />
+              <PopoverHeader></PopoverHeader>
+              <PopoverBody>{info}</PopoverBody>
+            </PopoverContent>
+          </Popover>
+        }
+        <div className={styles.inputWrapper}>
+          {addon &&
+            <InputLeftAddon
+              bgColor={'rgba(255, 255, 255, 0.5)'}
+              fontSize={'14px'}
+              className={styles.phoneAddon}
+              children='+375' />}
+          <Input
+            className={addon ? `${styles.input} ${styles.addon}` : styles.input}
+            placeholder={placeholder}
+            value={value}
+            onChange={e => onChange(e)} />
+        </div>
+      </label>
+    </InputGroup>
   );
 };
 

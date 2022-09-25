@@ -43,12 +43,14 @@ export interface ISelectedDate {
 
 export interface IUser {
   uid: string,
-  instagram: string,
-  email: string,
-  name: string,
-  phone: string,
-  privateKey: string,
+  info: {
+    name: string,
+    phone: string,
+    instagram: string,
+    privateKey: string,
+  }
   refferals: string[],
+  inviteKey: string,
   history: {
     [key: string]: IHistoryItem
   },

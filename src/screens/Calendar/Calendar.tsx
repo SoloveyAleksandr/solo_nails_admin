@@ -13,10 +13,13 @@ import CalendarDay from '../../components/CalendarDay/CalendarDay';
 
 import styles from './Calendar.module.scss';
 import axios from 'axios';
+import DefaultBtn from '../../components/DefaultBtn/DefaultBtn';
+import useAuth from '../../firebase/controllers/userController';
 
 interface ICalendar { };
 
 const Calendar: FC<ICalendar> = () => {
+  const { userSignOut } = useAuth();
   const reduxDispatch = useAppDispatch();
   const appState = useAppSelector(state => state.AppStore);
   const [menuIsActive, setMenuIsActive] = useState(false);
@@ -34,10 +37,20 @@ const Calendar: FC<ICalendar> = () => {
 
   const setDate = (date: ISelectedDate) => reduxDispatch(setSelectedDate(date));
 
+  const signOut = async () => {
+    reduxDispatch(setLoading(true));
+    await userSignOut();
+    reduxDispatch(setLoading(false));
+  }
+
   return (
     <div className={styles.Calendar}>
 
       <Menu isActive={menuIsActive}>
+        <DefaultBtn
+          type='button'
+          value='выход'
+          handleClick={signOut} />
       </Menu>
 
       <Header>

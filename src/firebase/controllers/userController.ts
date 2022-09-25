@@ -60,7 +60,7 @@ export default function useAuth() {
                 const user = userCredential.user;
                 const userEmail = user.email || 'email';
 
-                const newUser = new User(user.uid, instagram, userEmail, name, phone, false);
+                const newUser = new User(user.uid, instagram, userEmail, name, phone);
                 await setDoc(doc(userRef, user.uid), { ...newUser });
             }
         } catch (e) {
@@ -71,20 +71,10 @@ export default function useAuth() {
     const userSignOut = async () => {
         try {
             await signOut(auth);
-
         } catch (e) {
             errorHandler(e);
         }
     };
-
-    // const getCurrentUser = async (uid: string) => {
-    //     try {
-    //         const userSnap = await getDoc(doc(userRef, uid).withConverter(userConverter));
-    //         userSnap.exists() && reduxDispatch(setCurrentUser(userSnap.data()));
-    //     } catch (e) {
-    //         errorHandler(e);
-    //     }
-    // };
 
     const getUser = async (uid: string) => {
         try {
