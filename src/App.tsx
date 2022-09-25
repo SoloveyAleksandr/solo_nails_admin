@@ -7,6 +7,9 @@ import Spiner from "./components/Spiner/Spiner";
 import { IDayItem } from "./interfaces";
 import axios from 'axios';
 import { getMonth } from "./screens/Calendar/CalendarService";
+import { ChakraProvider } from "@chakra-ui/react";
+import { authentification } from "./firebase/firebase";
+import { onAuthStateChanged } from "firebase/auth";
 
 function App() {
   const reduxDispatch = useAppDispatch();
@@ -23,13 +26,24 @@ function App() {
     })()
   }, []);
 
+  onAuthStateChanged(authentification, (user) => {
+    if (user) {
+      const uid = user.uid;
+      console.log(uid);
+    } else {
+      console.log('User is signed out');
+    }
+  });
+
   return (
-    <div className="App">
-      <Spiner />
-      <BGContainer>
-        <AppRouter />
-      </BGContainer>
-    </div>
+    <ChakraProvider>
+      <div className="App">
+        <Spiner />
+        <BGContainer>
+          <AppRouter />
+        </BGContainer>
+      </div>
+    </ChakraProvider>
   );
 }
 

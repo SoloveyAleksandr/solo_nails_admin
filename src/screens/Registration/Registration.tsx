@@ -5,14 +5,17 @@ import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import styles from './Registration.module.scss';
 import DefaultBtn from "../../components/DefaultBtn/DefaultBtn";
 import { Link } from "react-router-dom";
-import { ICustomWindow } from "../../interfaces";
 import { authentification } from "../../firebase/firebase";
 import { setLoading } from "../../store";
+import FormInput from "../../components/FormInput/FormInput";
 
 const Registration: FC = () => {
   const reduxDispatch = useAppDispatch();
 
+  const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
+  const [inst, setInst] = useState('');
+  const [friendKey, setFriendKey] = useState('');
   const [awaitOTP, setAwaitOTP] = useState(false);
   const [OTP, setOTP] = useState('');
 
@@ -24,19 +27,6 @@ const Registration: FC = () => {
       }
     }, authentification);
   }
-
-  const handleSetValue = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (awaitOTP) {
-      if (value.length < 7) {
-        setOTP(value);
-      }
-    } else {
-      if (value.length < 10) {
-        setPhone(value);
-      }
-    }
-  };
 
   const submitForm = async (e: React.FormEvent) => {
     try {
@@ -77,36 +67,47 @@ const Registration: FC = () => {
       <form
         className={styles.form}
         onSubmit={e => submitForm(e)} >
-
-        <div className={styles.inputWrapper}>
-          <label
-            htmlFor="loginFormInput"
-            className={styles.inputLabel}>
-            {
-              awaitOTP ? 'код подтверждения' : 'Номер телефона'
-            }
-          </label>
-          {!awaitOTP &&
-            <span className={styles.inputPrefix}>
-              +375
-            </span>
-          }
-          <input
-            id="loginFormInput"
-            required
-            type='number'
-            className={awaitOTP ? styles.input : `${styles.input} ${styles.phone}`}
-            value={awaitOTP ? OTP : phone}
-            onChange={e => handleSetValue(e)} />
-        </div>
-
-        <div id="recaptcha-container"></div>
+        <ul className={styles.formList}>
+          <li className={styles.formListItem}>
+            <FormInput
+              title="Имя"
+              value={name}
+              placeholder='Кристина'
+              onChange={e => setName(e.target.value)}
+              info={'Ваше имя будет видно другим пользователям'} />
+          </li>
+          <li className={styles.formListItem}>
+            <FormInput
+              title="Номер телефона"
+              value={phone}
+              placeholder='291235656'
+              onChange={e => setPhone(e.target.value)}
+              addon='+375'
+              info="Номер телефона будет использоваться для входа в аккаунт" />
+          </li>
+          <li className={styles.formListItem}>
+            <FormInput
+              title="Ссылка на instagram"
+              value={inst}
+              placeholder='https://instagram.com/...'
+              onChange={e => setInst(e.target.value)}
+              info='Для получения ссылки зайдите на свою страницу в instagram нажмите "..." 
+              сверху и выберите "Скопировать URL профиля", затем вставьте его в поле ввода' />
+          </li>
+          <li className={styles.formListItem}>
+            <FormInput
+              title="Код друга"
+              value={friendKey}
+              placeholder='25a68r'
+              onChange={e => setFriendKey(e.target.value)}
+              info={'Реферальный код пригласившего вас человека'} />
+          </li>
+        </ul>
 
         <div className={styles.btnWrapper}>
           <DefaultBtn
             type={'submit'}
-            value={awaitOTP ? 'подтвердить' : 'регистрация'}
-            disabled={awaitOTP ? OTP.length < 6 : phone.length < 9} />
+            value={'регистрация'} />
         </div>
         <div className={styles.linkWrapper}>
           <Link
