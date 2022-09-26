@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { useAppDispatch } from "../../store/hooks";
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import DefaultBtn from "../../components/DefaultBtn/DefaultBtn";
@@ -17,8 +17,38 @@ const Login: FC = () => {
   const { authError } = useErrorHandler();
 
   const [phone, setPhone] = useState('');
+  const [phoneFormate, setPhoneFormate] = useState('');
   const [awaitOTP, setAwaitOTP] = useState(false);
   const [OTP, setOTP] = useState('');
+
+  const setPhoneNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    const freeValue = value.split(' ').join('').split('-').join('');
+    if (freeValue.length < 10) {
+      if (Number(freeValue)) {
+        setPhone(freeValue);
+      }
+      if (value === '') {
+        setPhone('');
+      }
+    }
+  };
+
+  const formatePhone = (): string => {
+    const length = phone.length;
+    if (length === 0) {
+      return '';
+    } else if (length <= 2) {
+      return `${phone}`;
+    } else if (length <= 5) {
+      return `${phone.slice(0, 2)} ${phone.slice(2)}`;
+    } else if (length <= 7) {
+      return `${phone.slice(0, 2)} ${phone.slice(2, 5)}-${phone.slice(5)}`;
+    } else if (length <= 9) {
+      return `${phone.slice(0, 2)} ${phone.slice(2, 5)}-${phone.slice(5, 7)}-${phone.slice(7)}`;
+    }
+    return '';
+  };
 
   const generateRecaptcha = () => {
     (window as any).recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
@@ -31,9 +61,9 @@ const Login: FC = () => {
 
   const sendForm = async () => {
     try {
-      if (!phone || phone.length !== 9) {
+      if (phone.length < 9) {
         toast({
-          title: 'Проверьте номер телефона',
+          title: 'номер телефона слтшком короткий',
           status: 'error',
           isClosable: true,
           duration: 5000,
@@ -93,10 +123,20 @@ const Login: FC = () => {
     }
   }
 
+  useEffect(() => {
+    setPhoneFormate(formatePhone());
+  }, [phone]);
+
   return (
     <div className={styles.registration}>
 
-      <form className={styles.form}>
+      <form
+        className={styles.form}
+        onSubmit={e => {
+          e.preventDefault();
+          awaitOTP && sendOTP();
+          !awaitOTP && sendForm();
+        }}>
         <ul className={styles.formList}>
           {
             awaitOTP ?
@@ -110,9 +150,9 @@ const Login: FC = () => {
               <li className={styles.formListItem}>
                 <FormInput
                   title="Номер телефона *"
-                  value={phone}
+                  value={phoneFormate}
                   placeholder='291235656'
-                  onChange={e => e.target.value.length < 10 && setPhone(e.target.value)}
+                  onChange={e => setPhoneNumber(e)}
                   addon='+375'
                   info="Номер телефона будет использоваться для входа в аккаунт" />
               </li>
@@ -132,13 +172,6 @@ const Login: FC = () => {
                 value={'регистрация'}
                 handleClick={() => sendForm()} />
           }
-        </div>
-        <div className={styles.linkWrapper}>
-          <Link
-            to={'/sign-in'}
-            className={styles.link}>
-            регистрация
-          </Link>
         </div>
       </form>
       <div id="recaptcha-container"></div>

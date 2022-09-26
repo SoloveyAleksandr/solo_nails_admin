@@ -62,13 +62,14 @@ const FormInput: FC<IFormInput> = ({
           {addon &&
             <InputLeftAddon
               bgColor={'rgba(255, 255, 255, 0.5)'}
-              fontSize={'14px'}
+              fontSize={'16px'}
               className={styles.phoneAddon}
               children='+375' />}
           <Input
             className={addon ? `${styles.input} ${styles.addon}` : styles.input}
             placeholder={placeholder}
             value={value}
+            fontSize={'16px'}
             onChange={e => onChange(e)} />
         </div>
       </label>

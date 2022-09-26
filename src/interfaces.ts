@@ -41,14 +41,16 @@ export interface ISelectedDate {
   formate: string,
 }
 
-export interface IUser {
+export interface IUserInfo {
   uid: string,
-  info: {
-    name: string,
-    phone: string,
-    instagram: string,
-    privateKey: string,
-  }
+  name: string,
+  phone: string,
+  instagram: string,
+  privateKey: string,
+}
+
+export interface IUser {
+  info: IUserInfo,
   refferals: string[],
   inviteKey: string,
   history: {

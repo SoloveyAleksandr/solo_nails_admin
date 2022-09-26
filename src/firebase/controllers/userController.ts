@@ -50,27 +50,22 @@ export default function useAuth() {
         }
     };
 
-    const createUser = async (email: string, pass: string, passCope: string, name: string, phone: string, instagram: string) => {
+    const userSignOut = async () => {
         try {
-            if (pass !== passCope) {
-                return;
-            }
-            else {
-                const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
-                const user = userCredential.user;
-                const userEmail = user.email || 'email';
-
-                const newUser = new User(user.uid, instagram, userEmail, name, phone);
-                await setDoc(doc(userRef, user.uid), { ...newUser });
-            }
+            await signOut(auth);
         } catch (e) {
             errorHandler(e);
         }
     };
 
-    const userSignOut = async () => {
+    const createUser = async (email: string, pass: string, passCope: string, name: string, phone: string, instagram: string) => {
         try {
-            await signOut(auth);
+            const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+            const user = userCredential.user;
+            const userEmail = user.email || 'email';
+
+            const newUser = new User(user.uid, instagram, userEmail, name, phone);
+            await setDoc(doc(userRef, user.uid), { ...newUser });
         } catch (e) {
             errorHandler(e);
         }

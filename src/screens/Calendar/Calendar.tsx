@@ -33,6 +33,17 @@ const Calendar: FC<ICalendar> = () => {
       reduxDispatch(setSelectedMonth(dateInfo.calendarDays));
       reduxDispatch(setLoading(false));
     })()
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      reduxDispatch(setLoading(true));
+      const dateInfo = await getMonth(appState.month, appState.year);
+      reduxDispatch(setMonth(dateInfo.month));
+      reduxDispatch(setYear(dateInfo.year));
+      reduxDispatch(setSelectedMonth(dateInfo.calendarDays));
+      reduxDispatch(setLoading(false));
+    })()
   }, [appState.month]);
 
   const setDate = (date: ISelectedDate) => reduxDispatch(setSelectedDate(date));
@@ -50,7 +61,7 @@ const Calendar: FC<ICalendar> = () => {
         <DefaultBtn
           type='button'
           value='выход'
-          handleClick={signOut} />
+          handleClick={() => signOut()} />
       </Menu>
 
       <Header>

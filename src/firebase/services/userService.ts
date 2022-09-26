@@ -1,14 +1,8 @@
 import { v4 } from "uuid";
-import { IHistoryItem, ITimeItem, IUser } from "../../interfaces";
+import { IHistoryItem, ITimeItem, IUser, IUserInfo } from "../../interfaces";
 
 export class User {
-  uid: string;
-  info: {
-    name: string,
-    phone: string,
-    instagram: string,
-    privateKey: string,
-  };
+  info: IUserInfo;
   refferals: string[];
   inviteKey: string;
   history: {
@@ -17,8 +11,8 @@ export class User {
   description: string;
   isAdmin: boolean;
   constructor(uid: string, name: string, phone: string, instagram: string, inviteKey: string) {
-    this.uid = uid;
     this.info = {
+      uid: uid,
       name: name,
       phone: phone,
       instagram: instagram,
@@ -33,13 +27,7 @@ export class User {
 }
 
 export class UserConverter {
-  uid: string;
-  info: {
-    name: string,
-    phone: string,
-    instagram: string,
-    privateKey: string,
-  };
+  info: IUserInfo;
   refferals: string[];
   inviteKey: string;
   history: {
@@ -48,7 +36,6 @@ export class UserConverter {
   description: string;
   isAdmin: boolean;
   constructor(user: IUser) {
-    this.uid = user.uid;
     this.info = user.info;
     this.refferals = user.refferals;
     this.inviteKey = user.inviteKey;
@@ -61,7 +48,6 @@ export class UserConverter {
 export const userConverter = {
   toFirestore: (user: IUser) => {
     return {
-      uid: user.uid,
       info: user.info,
       refferals: user.refferals,
       inviteKey: user.inviteKey,

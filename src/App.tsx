@@ -8,39 +8,41 @@ import { getMonth } from "./screens/Calendar/CalendarService";
 import { ChakraProvider } from "@chakra-ui/react";
 import { authentification } from "./firebase/firebase";
 import { onAuthStateChanged } from "firebase/auth";
+import { useToast } from '@chakra-ui/react';
 
 function App() {
   const reduxDispatch = useAppDispatch();
   const appState = useAppSelector(state => state.AppStore);
+  const toast = useToast();
 
-  useEffect(() => {
-    (async () => {
-      reduxDispatch(setLoading(true));
-      const dateInfo = await getMonth(appState.month, appState.year);
-      reduxDispatch(setMonth(dateInfo.month));
-      reduxDispatch(setYear(dateInfo.year));
-      reduxDispatch(setSelectedMonth(dateInfo.calendarDays));
-      reduxDispatch(setLoading(false));
-    })()
-  }, []);
-
-  onAuthStateChanged(authentification, (user) => {
+  onAuthStateChanged(authentification, async (user) => {
     if (user) {
       const uid = user.uid;
-      console.log(uid);
+      const userInfo = await
+      toast({
+        title: `Здравствуйте, `,
+        status: 'success',
+        isClosable: true,
+        duration: 5000,
+        position: 'top'
+      });
     } else {
-      console.log('User is signed out');
+      toast({
+        title: 'Вы вышли с аккаунта',
+        status: 'success',
+        isClosable: true,
+        duration: 5000,
+        position: 'top'
+      });
     }
   });
 
   return (
     <ChakraProvider>
-      <div className="App">
-        <Spiner />
-        <BGContainer>
-          <AppRouter />
-        </BGContainer>
-      </div>
+      <Spiner />
+      <BGContainer>
+        <AppRouter />
+      </BGContainer>
     </ChakraProvider>
   );
 }
