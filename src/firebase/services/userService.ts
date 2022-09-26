@@ -10,16 +10,16 @@ export class User {
   };
   description: string;
   isAdmin: boolean;
-  constructor(uid: string, name: string, phone: string, instagram: string, inviteKey: string) {
+  constructor(uid: string, phone: string) {
     this.info = {
       uid: uid,
-      name: name,
+      name: '',
       phone: phone,
-      instagram: instagram,
+      instagram: '',
       privateKey: v4().slice(1, 7),
     }
     this.refferals = [];
-    this.inviteKey = inviteKey;
+    this.inviteKey = '';
     this.history = {};
     this.description = '';
     this.isAdmin = false;
@@ -59,6 +59,37 @@ export const userConverter = {
   fromFirestore: (snapshot: any, options: object) => {
     const data: IUser = snapshot.data(options);
     return new UserConverter(data);
+  }
+};
+
+export class UserInfoConverter {
+  uid: string;
+  name: string;
+  phone: string;
+  instagram: string;
+  privateKey: string;
+  constructor(info: IUserInfo) {
+    this.uid = info.uid;
+    this.name = info.name;
+    this.phone = info.phone;
+    this.instagram = info.instagram;
+    this.privateKey = info.privateKey;
+  }
+}
+
+export const userInfoConverter = {
+  toFirestore: (info: IUserInfo) => {
+    return {
+      uid: info.uid,
+      name: info.name,
+      phone: info.phone,
+      instagram: info.instagram,
+      privateKey: info.privateKey,
+    };
+  },
+  fromFirestore: (snapshot: any, options: object) => {
+    const data: IUserInfo = snapshot.data(options);
+    return new UserInfoConverter(data);
   }
 };
 

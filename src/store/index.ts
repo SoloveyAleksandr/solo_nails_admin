@@ -95,6 +95,8 @@ export const {
   setSelectedDate,
   setSelectedMonth,
   setLoading,
+  setCurrentUserInfo,
+  resetCurrentUserInfo,
 } = AppStore.actions;
 
 const store = configureStore({

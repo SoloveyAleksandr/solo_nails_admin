@@ -79,7 +79,7 @@ const Login: FC = () => {
       const confirmationResult = await signInWithPhoneNumber(authentification, phoneNumber, appVerifier);
       (window as any).confirmationResult = confirmationResult;
       toast({
-        title: 'Код был отправлен на ваш номер телефона',
+        title: `Код был отправлен на ваш номер: +375 ${phoneFormate}`,
         status: 'success',
         isClosable: true,
         duration: 5000,
@@ -101,8 +101,6 @@ const Login: FC = () => {
         reduxDispatch(setLoading(true));
         const confirmationResult = (window as any).confirmationResult;
         const result = await confirmationResult.confirm(OTP)
-        const user = result.user;
-        console.log(user);
         return;
       } else {
         toast({
@@ -169,7 +167,7 @@ const Login: FC = () => {
               :
               <DefaultBtn
                 type={'button'}
-                value={'регистрация'}
+                value={'войти'}
                 handleClick={() => sendForm()} />
           }
         </div>
