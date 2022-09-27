@@ -48,7 +48,7 @@ function App() {
           title: 'Здравствуйте, пожалуйста, заполните данные профиля',
           status: 'success',
           isClosable: true,
-          duration: null,
+          duration: 30000,
           position: 'top',
         });
       }

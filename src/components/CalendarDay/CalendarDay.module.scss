@@ -1,30 +1,31 @@
+@import "../../var";
+
 .calendarDay {
-  height          : 60px;
-  background-color: rgba(255, 255, 255, 0.2);
-  color           : rgb(255, 255, 255);
-  font-size       : 14px;
-  font-weight     : 600;
-  font-family     : 'Teko';
-  display         : flex;
-  align-items     : center;
-  justify-content : center;
-  border-radius   : 6px;
-  position        : relative;
-  border          : 1px solid rgb(255, 255, 255);
-  color           : #fff;
+  height: 60px;
+  background-color: $transparentWhite;
+  color: $white;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: "Teko";
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  position: relative;
+  border: 1px solid $white;
+  color: #fff;
 
   &.disabled {
     filter: blur(1px) opacity(50%);
   }
-  
 }
 
 .marker {
-  background-color: rgb(0, 255, 115);
-  width           : 10px;
-  height          : 10px;
-  border-radius   : 50%;
-  position        : absolute;
-  top             : 5px;
-  left            : 5px;
+  background-color: $greenMark;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  position: absolute;
+  top: 5px;
+  left: 5px;
 }

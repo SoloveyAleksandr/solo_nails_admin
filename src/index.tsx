@@ -5,7 +5,7 @@ import App from './App';
 import { createStandaloneToast } from '@chakra-ui/toast'
 import { BrowserRouter } from 'react-router-dom';
 
-import './index.css';
+import './index.scss';
 
 const { ToastContainer } = createStandaloneToast();
 

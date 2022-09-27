@@ -62,10 +62,13 @@ const Calendar: FC = () => {
     <div className={styles.Calendar}>
 
       <Menu isActive={menuIsActive}>
-        <DefaultBtn
-          type='button'
-          value='выход'
-          handleClick={() => signOut()} />
+        <ul className={styles.menuList}>
+          <li
+            className={styles.menuItem}
+            onClick={() => signOut()}>
+            выход
+          </li>
+        </ul>
       </Menu>
 
       <Header>

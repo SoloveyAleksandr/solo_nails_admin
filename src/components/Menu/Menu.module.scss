@@ -1,14 +1,25 @@
+@import "../../var";
+
 .menu {
     position: absolute;
     z-index: 100;
     top: 55px;
     left: -100vw;
     width: 100vw;
+    max-width: 450px;
     min-height: calc(100vh - 55px);
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: rgba(0, 0, 0, 0.85);
     opacity: 0;
     pointer-events: none;
-    transition: .3s;
+    transition: 0.3s;
+    color: $white;
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    background-image: url(../../images/logo-bg.png);
+    background-repeat: no-repeat;
+    background-size: 45%;
+    background-position: center center;
 }
 
 .menu.active {
