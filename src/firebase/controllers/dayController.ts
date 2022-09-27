@@ -1,4 +1,5 @@
 import { collection, doc, getDoc, setDoc, updateDoc, deleteField } from "firebase/firestore";
+import { setSelectedDay } from "../../store";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { DB } from "../firebase";
 import { Day, dayConverter, sortTimesList } from "../services/dayService";
@@ -38,7 +39,7 @@ export default function useDay() {
       const formateDate = appState.selectedDate.formate;
       const daySnap = await getDoc(doc(dayRef, fullDate).withConverter(dayConverter));
       if (daySnap.exists()) {
-        // reduxDispatch(setSelectedDay(daySnap.data()));
+        reduxDispatch(setSelectedDay(daySnap.data()));
       } else {
         await addDay({
           full: fullDate,

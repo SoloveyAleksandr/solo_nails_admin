@@ -163,9 +163,11 @@ const Login: FC = () => {
               <DefaultBtn
                 type={'button'}
                 value={'подтвердить код'}
-                handleClick={() => sendOTP()} />
+                handleClick={() => sendOTP()}
+                dark={true} />
               :
               <DefaultBtn
+                dark={true}
                 type={'button'}
                 value={'войти'}
                 handleClick={() => sendForm()} />

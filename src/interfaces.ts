@@ -30,10 +30,13 @@ export interface ITimeItem {
     full: string,
     formate: string
   },
-  client: {
-    uid: string,
+  clientUID: string,
+  isOffline: {
+    status: boolean,
+    name: string,
+    instagram: string,
     comment: string,
-  },
+  }
 }
 
 export interface ISelectedDate {

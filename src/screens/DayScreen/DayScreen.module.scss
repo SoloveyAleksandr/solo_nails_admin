@@ -1,0 +1,64 @@
+@import "../../var";
+
+.day {
+  position: relative;
+}
+
+.plusBtn {
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  &Wrapper {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+  }
+}
+
+.timeInp {
+  color: $black;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.modal {
+  &List {
+    list-style: none;
+    &Item + &Item {
+      margin-top: 15px;
+    }
+  }
+  &ItemLabel {
+    color: $black;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  &BtnWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 15px;
+  }
+}
+
+.switchWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.oflineInfoList {
+  list-style: none;
+  overflow: hidden;
+  transform-origin: top center;
+  transition: 0.5s;
+  margin-top: 0;
+  max-height: 0;
+  &.open {
+    max-height: 500px;
+    height: fit-content;
+    margin-bottom: 30px;
+    margin-top: 15px;
+  }
+}

@@ -36,26 +36,27 @@ export default function useTime() {
       });
       await addReserve(id, time);
     } catch (e) {
+      console.log(e);
       errorHandler(e);
     }
   };
 
-  const removeTime = async (item: ITimeItem) => {
-    try {
-      const timeRef = doc(dayRef, item.date.full);
-      await updateDoc(timeRef, {
-        ['timeList.' + [item.id]]: deleteField()
-      });
-      await deleteReserve(item.id);
-      if (item.client.uid) {
-        await updateDoc(doc(userRef, item.client.uid), {
-          ['history.' + [item.id]]: deleteField(),
-        });
-      }
-    } catch (e) {
-      errorHandler(e);
-    }
-  };
+  // const removeTime = async (item: ITimeItem) => {
+  //   try {
+  //     const timeRef = doc(dayRef, item.date.full);
+  //     await updateDoc(timeRef, {
+  //       ['timeList.' + [item.id]]: deleteField()
+  //     });
+  //     await deleteReserve(item.id);
+  //     if (item.client.uid) {
+  //       await updateDoc(doc(userRef, item.client.uid), {
+  //         ['history.' + [item.id]]: deleteField(),
+  //       });
+  //     }
+  //   } catch (e) {
+  //     errorHandler(e);
+  //   }
+  // };
 
   // const bookATime = async (
   //   timeItem: ITimeItem,
@@ -77,6 +78,5 @@ export default function useTime() {
 
   return {
     addTime,
-    removeTime,
   }
 }
