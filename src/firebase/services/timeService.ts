@@ -9,7 +9,10 @@ export class Time {
     full: string,
     formate: string
   };
-  clientUID: string;
+  client: {
+    uid: string,
+    confirmed: boolean,
+  };
   isOffline: {
     status: boolean,
     name: string,
@@ -34,7 +37,10 @@ export class Time {
     this.isReserved = false;
     this.date = date;
     this.time = time;
-    this.clientUID = '';
+    this.client = {
+      uid: '',
+      confirmed: false,
+    };
     this.isOffline = isOffline || {
       status: false,
       name: '',
@@ -52,7 +58,10 @@ export class TimeConverter {
     full: string,
     formate: string
   };
-  clientUID: string;
+  client: {
+    uid: string,
+    confirmed: boolean,
+  }
   isOffline: {
     status: boolean,
     name: string,
@@ -64,7 +73,7 @@ export class TimeConverter {
     this.isReserved = time.isReserved;
     this.date = time.date;
     this.time = time.time;
-    this.clientUID = time.clientUID;
+    this.client = time.client;
     this.isOffline = time.isOffline;
   }
 }
@@ -76,7 +85,7 @@ export const timeConverter = {
       isReserved: time.isReserved,
       time: time.time,
       date: time.date,
-      clientUID: time.clientUID,
+      client: time.client,
       isOffline: time.isOffline
     };
   },

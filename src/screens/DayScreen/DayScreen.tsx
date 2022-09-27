@@ -16,7 +16,7 @@ import {
   AccordionIcon,
   useToast,
 } from '@chakra-ui/react';
-import { AddIcon, } from '@chakra-ui/icons';
+import { AddIcon, CheckIcon, CloseIcon, EditIcon, } from '@chakra-ui/icons';
 
 import styles from './DayScreen.module.scss';
 import { setLoading } from "../../store";
@@ -26,9 +26,13 @@ import DefaultBtn from "../../components/DefaultBtn/DefaultBtn";
 import FormInput from "../../components/FormInput/FormInput";
 import useTime from "../../firebase/controllers/timeController";
 import { Time } from "../../firebase/services/timeService";
+import { sortByTime } from "../../firebase/services/dayService";
+import Container from "../../components/Container/Container";
+import { NavLink } from "react-router-dom";
 
 const DayScreen: FC = () => {
   const { addTime } = useTime();
+  const { getDay } = useDay();
   const toast = useToast();
   const appState = useAppSelector(store => store.AppStore);
   const reduxDispatch = useAppDispatch();
@@ -40,8 +44,6 @@ const DayScreen: FC = () => {
   const [comment, setComment] = useState('');
   const [isOffline, setIsOffline] = useState(false);
 
-  const { getDay } = useDay();
-
   useEffect(() => {
     (async () => {
       reduxDispatch(setLoading(true));
@@ -49,6 +51,8 @@ const DayScreen: FC = () => {
       reduxDispatch(setLoading(false));
     })();
   }, []);
+
+  const timeList = Object.values(appState.selectedDay.timeList).sort((a, b) => sortByTime(a, b));
 
   const closeModal = () => {
     onClose();
@@ -80,7 +84,7 @@ const DayScreen: FC = () => {
           comment: comment,
         }) : new Time(time, appState.selectedDate);
       reduxDispatch(setLoading(true));
-      await addTime(appState.selectedDate.full, {...newTimeItem});
+      await addTime(appState.selectedDate.full, { ...newTimeItem });
       await getDay();
       closeModal();
       toast({
@@ -108,6 +112,81 @@ const DayScreen: FC = () => {
 
       <ScreenTitle
         title={appState.selectedDate.formate} />
+
+      <Container>
+        <ul className={styles.timeList}>
+          {
+            timeList.map(item => (
+              <li
+                key={item.id}
+                className={styles.timeItem}>
+                <span className={styles.timeItemTime}>
+                  {item.time}
+                </span>
+                <ul className={styles.btnList}>
+                  {item.client.uid &&
+                    <li className={styles.btnListItem}>
+                      <NavLink
+                        to={'/user'}>
+                        <IconButton
+                          backgroundColor={'transparent'}
+                          border={'2px'}
+                          borderColor={'#fff'}
+                          size={'xs'}
+                          borderRadius={'50%'}
+                          colorScheme='whiteAlpha'
+                          aria-label='add time'
+                          icon={
+                            <svg width="16" height="18" viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <rect x="3" width="6" height="6" rx="3" fill="white" />
+                              <path d="M0 10.5V10.5C0.939219 8.67374 2.71599 7.4257 4.75256 7.1617L4.82655 7.15211C5.60557 7.05113 6.39436 7.05113 7.17338 7.15211L7.24745 7.16171C9.28402 7.42571 11.0608 8.67374 12 10.5V10.5V10.5C10.7728 12.6476 8.47348 14 5.99996 14V14V14C3.80354 14 1.74233 12.9393 0.465688 11.152L0 10.5Z" fill="white" />
+                            </svg>
+                          } />
+                      </NavLink>
+                    </li>
+                  }
+                  {(item.client.uid && !item.client.confirmed) &&
+                    <li className={styles.btnListItem}>
+                      <IconButton
+                        backgroundColor={'transparent'}
+                        border={'2px'}
+                        borderColor={'#fff'}
+                        size={'xs'}
+                        borderRadius={'50%'}
+                        colorScheme='whiteAlpha'
+                        aria-label='add time'
+                        icon={<CheckIcon />} />
+                    </li>
+                  }
+                  <li className={styles.btnListItem}>
+                    <IconButton
+                      backgroundColor={'transparent'}
+                      border={'2px'}
+                      borderColor={'#fff'}
+                      size={'xs'}
+                      borderRadius={'50%'}
+                      colorScheme='whiteAlpha'
+                      aria-label='add time'
+                      icon={<CloseIcon />} />
+                  </li>
+
+                  <li className={styles.btnListItem}>
+                    <IconButton
+                      backgroundColor={'transparent'}
+                      border={'2px'}
+                      borderColor={'#fff'}
+                      size={'xs'}
+                      borderRadius={'50%'}
+                      colorScheme='whiteAlpha'
+                      aria-label='add time'
+                      icon={<EditIcon />} />
+                  </li>
+                </ul>
+              </li>
+            ))
+          }
+        </ul>
+      </Container >
 
       <div className={styles.plusBtnWrapper}>
         <IconButton
@@ -193,7 +272,7 @@ const DayScreen: FC = () => {
         </div>
       </ModalConteiner>
 
-    </div>
+    </div >
   );
 };
 

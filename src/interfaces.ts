@@ -30,7 +30,10 @@ export interface ITimeItem {
     full: string,
     formate: string
   },
-  clientUID: string,
+  client: {
+    uid: string,
+    confirmed: boolean,
+  },
   isOffline: {
     status: boolean,
     name: string,
