@@ -1,0 +1,18 @@
+@import '../../var';
+
+.btn {
+  color: $white;
+  width: 25px;
+  height: 25px;
+  border: 2px solid $white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: .3s;
+
+  &:hover {
+    border-color: $white50;
+    color: $white50;
+  }
+}

@@ -9,16 +9,10 @@ import {
   Input,
   Switch,
   useDisclosure,
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-  AccordionIcon,
   useToast,
 } from '@chakra-ui/react';
-import { AddIcon, CheckIcon, CloseIcon, EditIcon, } from '@chakra-ui/icons';
-
-import styles from './DayScreen.module.scss';
+import { AddIcon } from '@chakra-ui/icons';
+import { solid, regular, brands, icon } from '@fortawesome/fontawesome-svg-core/import.macro';
 import { setLoading } from "../../store";
 import useDay from "../../firebase/controllers/dayController";
 import ModalConteiner from "../../components/ModalContainer/ModalContainer";
@@ -29,6 +23,10 @@ import { Time } from "../../firebase/services/timeService";
 import { sortByTime } from "../../firebase/services/dayService";
 import Container from "../../components/Container/Container";
 import { NavLink } from "react-router-dom";
+import IconBtn from "../../components/IconBtn/IconBtn";
+
+import styles from './DayScreen.module.scss';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const DayScreen: FC = () => {
   const { addTime } = useTime();
@@ -128,58 +126,25 @@ const DayScreen: FC = () => {
                     <li className={styles.btnListItem}>
                       <NavLink
                         to={'/user'}>
-                        <IconButton
-                          backgroundColor={'transparent'}
-                          border={'2px'}
-                          borderColor={'#fff'}
-                          size={'xs'}
-                          borderRadius={'50%'}
-                          colorScheme='whiteAlpha'
-                          aria-label='add time'
-                          icon={
-                            <svg width="16" height="18" viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <rect x="3" width="6" height="6" rx="3" fill="white" />
-                              <path d="M0 10.5V10.5C0.939219 8.67374 2.71599 7.4257 4.75256 7.1617L4.82655 7.15211C5.60557 7.05113 6.39436 7.05113 7.17338 7.15211L7.24745 7.16171C9.28402 7.42571 11.0608 8.67374 12 10.5V10.5V10.5C10.7728 12.6476 8.47348 14 5.99996 14V14V14C3.80354 14 1.74233 12.9393 0.465688 11.152L0 10.5Z" fill="white" />
-                            </svg>
-                          } />
+                        <IconBtn
+                          icon={<FontAwesomeIcon icon={solid('user')} />} />
                       </NavLink>
                     </li>
                   }
                   {(item.client.uid && !item.client.confirmed) &&
                     <li className={styles.btnListItem}>
-                      <IconButton
-                        backgroundColor={'transparent'}
-                        border={'2px'}
-                        borderColor={'#fff'}
-                        size={'xs'}
-                        borderRadius={'50%'}
-                        colorScheme='whiteAlpha'
-                        aria-label='add time'
-                        icon={<CheckIcon />} />
+                      <IconBtn
+                        icon={<FontAwesomeIcon icon={solid('check')} />} />
                     </li>
                   }
                   <li className={styles.btnListItem}>
-                    <IconButton
-                      backgroundColor={'transparent'}
-                      border={'2px'}
-                      borderColor={'#fff'}
-                      size={'xs'}
-                      borderRadius={'50%'}
-                      colorScheme='whiteAlpha'
-                      aria-label='add time'
-                      icon={<CloseIcon />} />
+                    <IconBtn
+                      icon={<FontAwesomeIcon size='xs' icon={solid('pen')} />} />
                   </li>
 
                   <li className={styles.btnListItem}>
-                    <IconButton
-                      backgroundColor={'transparent'}
-                      border={'2px'}
-                      borderColor={'#fff'}
-                      size={'xs'}
-                      borderRadius={'50%'}
-                      colorScheme='whiteAlpha'
-                      aria-label='add time'
-                      icon={<EditIcon />} />
+                    <IconBtn
+                      icon={<FontAwesomeIcon size='sm' icon={solid('close')} />} />
                   </li>
                 </ul>
               </li>
