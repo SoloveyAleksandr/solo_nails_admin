@@ -1,5 +1,5 @@
 import AppRouter from "./AppRouter";
-import { resetCurrentUserInfo, setCurrentUserInfo, setLoading } from "./store";
+import { resetCurrentUserInfo, setIsLogged, setLoading } from "./store";
 import { useAppDispatch, useAppSelector } from "./store/hooks";
 import BGContainer from "./components/BGContainer/BGContainer";
 import Spiner from "./components/Spiner/Spiner";
@@ -8,6 +8,7 @@ import { authentification } from "./firebase/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { useToast } from '@chakra-ui/react';
 import useAuth from "./firebase/controllers/userController";
+import { useEffect } from 'react';
 
 function App() {
   const reduxDispatch = useAppDispatch();
@@ -18,45 +19,41 @@ function App() {
   onAuthStateChanged(authentification, async (user) => {
     try {
       if (user) {
-        if (appState.currentUserInfo.uid !== user.uid) {
-          reduxDispatch(setLoading(true));
-          await getUserInfo(user);
-          reduxDispatch(setLoading(false));
-          if (appState.currentUserInfo.name) {
-            toast({
-              title: `Здравствуйте, ${appState.currentUserInfo.name}`,
-              status: 'success',
-              isClosable: true,
-              duration: 5000,
-              position: 'top',
-            });
-          } else {
-            toast({
-              title: 'Поалуйста заполните данные профиля',
-              status: 'info',
-              isClosable: true,
-              duration: 5000,
-              position: 'top',
-            });
-          }
-        } return;
-      } else {
-        if (appState.currentUserInfo.uid) {
-          toast({
-            title: 'Вы вышли из аккаунта',
-            status: 'success',
-            isClosable: true,
-            duration: 5000,
-            position: 'top',
-          });
-          reduxDispatch(resetCurrentUserInfo());
-          return;
+        if (!appState.isLogged) {
+          reduxDispatch(setIsLogged(true));
         }
+      } else if (!user && appState.isLogged) {
+        reduxDispatch(setIsLogged(false));
       }
     } catch (e) {
       console.log(e);
     }
   });
+
+  useEffect(() => {
+    if (appState.isLogged) {
+      (async () => await getUserInfo())();
+      if (appState.currentUserInfo.name &&
+        appState.currentUserInfo.instagram &&
+        appState.currentUserInfo.phone) {
+        toast({
+          title: `Здравствуйте, ${appState.currentUserInfo.name}`,
+          status: 'success',
+          isClosable: true,
+          duration: 5000,
+          position: 'top',
+        });
+      } else {
+        toast({
+          title: 'Здравствуйте, пожалуйста, заполните данные профиля',
+          status: 'success',
+          isClosable: true,
+          duration: null,
+          position: 'top',
+        });
+      }
+    }
+  }, [appState.isLogged]);
 
   return (
     <ChakraProvider>

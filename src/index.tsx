@@ -7,7 +7,7 @@ import { BrowserRouter } from 'react-router-dom';
 
 import './index.css';
 
-const { ToastContainer } = createStandaloneToast()
+const { ToastContainer } = createStandaloneToast();
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

@@ -2,7 +2,7 @@ import { FC, useEffect, useState } from 'react';
 import Header from '../../components/Header/Header';
 import MonthSwitch from '../../components/MonthSwitch/MonthSwitch';
 import WeekDays from '../../components/WeekDays/WeekDays';
-import { setLoading, setMonth, setNextMonth, setPrevMonth, setSelectedDate, setSelectedMonth, setYear } from '../../store';
+import { resetCurrentUserInfo, setLoading, setMonth, setNextMonth, setPrevMonth, setSelectedDate, setSelectedMonth, setYear } from '../../store';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import MenuBtn from '../../components/MenuBtn/MenuBtn';
 import Logo from '../../components/Logo/Logo';
@@ -27,67 +27,18 @@ const Calendar: FC = () => {
   const [menuIsActive, setMenuIsActive] = useState(false);
 
   useEffect(() => {
-    (async () => {
-      try {
-        reduxDispatch(setLoading(true));
-        const dateInfo = await getMonth(appState.month, appState.year);
-        setPrevMonthState(dateInfo.month);
-        reduxDispatch(setMonth(dateInfo.month));
-        reduxDispatch(setYear(dateInfo.year));
-        reduxDispatch(setSelectedMonth(dateInfo.calendarDays));
-        if (appState.currentUserInfo.name) {
-          toast({
-            title: `Здравствуйте, ${appState.currentUserInfo.name}`,
-            status: 'success',
-            isClosable: true,
-            duration: 5000,
-            position: 'top',
-          });
-        } else {
-          toast({
-            title: 'Поалуйста заполните данные профиля',
-            status: 'info',
-            isClosable: true,
-            duration: 5000,
-            position: 'top',
-          });
-        }
-      } catch (e) {
-        console.log(e);
-        toast({
-          title: 'Произошла ошибка, попробуйте перезагрузить страницу',
-          status: 'error',
-          isClosable: true,
-          duration: 8000,
-          position: 'top',
-        });
-      } finally {
-        reduxDispatch(setLoading(false));
-      }
-    })()
+    const dateInfo = getMonth(appState.month, appState.year);
+    setPrevMonthState(dateInfo.month);
+    reduxDispatch(setMonth(dateInfo.month));
+    reduxDispatch(setYear(dateInfo.year));
+    reduxDispatch(setSelectedMonth(dateInfo.calendarDays));
   }, []);
 
   useEffect(() => {
     if (appState.month !== prevMonthState) {
-      (async () => {
-        try {
-          reduxDispatch(setLoading(true));
-          const dateInfo = await getMonth(appState.month, appState.year);
-          reduxDispatch(setSelectedMonth(dateInfo.calendarDays));
-          setPrevMonthState(dateInfo.month);
-        } catch (e) {
-          console.log(e);
-          toast({
-            title: 'Произошла ошибка, попробуйте перезагрузить страницу',
-            status: 'error',
-            isClosable: true,
-            duration: 8000,
-            position: 'top',
-          });
-        } finally {
-          reduxDispatch(setLoading(false));
-        }
-      })()
+      const dateInfo = getMonth(appState.month, appState.year);
+      reduxDispatch(setSelectedMonth(dateInfo.calendarDays));
+      setPrevMonthState(dateInfo.month);
     }
   }, [appState.month]);
 
@@ -96,6 +47,14 @@ const Calendar: FC = () => {
   const signOut = async () => {
     reduxDispatch(setLoading(true));
     await userSignOut();
+    reduxDispatch(resetCurrentUserInfo());
+    toast({
+      title: 'Вы вышли из аккаунта',
+      status: 'success',
+      isClosable: true,
+      duration: 5000,
+      position: 'top',
+    });
     reduxDispatch(setLoading(false));
   }
 

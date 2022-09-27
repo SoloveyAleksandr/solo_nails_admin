@@ -50,18 +50,18 @@ export default function useAuth() {
         }
     };
 
-    const getUserInfo = async (user: FBUser) => {
+    const getUserInfo = async () => {
         try {
-            console.log('getUserInfo');
-            const userSnap = await getDoc(doc(userRef, user.uid).withConverter(userConverter));
-            if (userSnap.exists()) {
-                reduxDispatch(setCurrentUserInfo(userSnap.data().info));
-                return;
-            } else {
-                const newUser = new User(user.uid, user.phoneNumber || '');
-                await setDoc(doc(userRef, user.uid), { ...newUser });
-                getUserInfo(user);
-                return;
+            const user = auth.currentUser;
+            if (user) {
+                const userSnap = await getDoc(doc(userRef, user.uid).withConverter(userConverter));
+                if (userSnap.exists()) {
+                    reduxDispatch(setCurrentUserInfo(userSnap.data().info));
+                } else {
+                    const newUser = new User(user.uid, user.phoneNumber || '');
+                    await setDoc(doc(userRef, user.uid), { ...newUser });
+                    getUserInfo();
+                }
             }
         } catch (e) {
             errorHandler(e);

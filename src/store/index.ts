@@ -17,7 +17,9 @@ const currentUserInfo: IUserInfo = {
   phone: '',
   instagram: '',
   privateKey: '',
-}
+};
+
+const isLogged: boolean = false;
 
 const AppStore = createSlice({
   name: 'AppStore',
@@ -29,6 +31,7 @@ const AppStore = createSlice({
     selectedMonth,
     isLoading,
     currentUserInfo,
+    isLogged,
   },
 
   reducers: {
@@ -84,6 +87,10 @@ const AppStore = createSlice({
       };
     },
 
+    setIsLogged(state, action: { payload: boolean }) {
+      state.isLogged = action.payload;
+    },
+
   },
 });
 
@@ -97,6 +104,7 @@ export const {
   setLoading,
   setCurrentUserInfo,
   resetCurrentUserInfo,
+  setIsLogged,
 } = AppStore.actions;
 
 const store = configureStore({
