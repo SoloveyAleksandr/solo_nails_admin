@@ -1,14 +1,16 @@
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, User as FBUser } from "firebase/auth";
 import { collection, deleteField, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { IHistoryItem, ITimeItem } from "../../interfaces";
+import { setCurrentUserInfo } from "../../store";
 import { useAppDispatch } from "../../store/hooks";
-import { app, DB } from "../firebase";
-import { History, User, userConverter } from "../services/userService";
+import { app, authentification, DB } from "../firebase";
+import { History, User, userConverter, userInfoConverter } from "../services/userService";
 import useReserve from "./reserveController";
 
 export default function useAuth() {
     const reduxDispatch = useAppDispatch();
-    const auth = getAuth(app);
+    const auth = authentification;
+
     const userRef = collection(DB, "user");
     const dayRef = collection(DB, 'day');
 
@@ -40,61 +42,31 @@ export default function useAuth() {
         }
     };
 
-    const signIn = async (email: string, pass: string) => {
-        try {
-            const userCredential = await signInWithEmailAndPassword(auth, email, pass);
-
-        } catch (e) {
-            errorHandler(e);
-        }
-    };
-
-    const createUser = async (email: string, pass: string, passCope: string, name: string, phone: string, instagram: string) => {
-        try {
-            if (pass !== passCope) {
-                return;
-            }
-            else {
-                const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
-                const user = userCredential.user;
-                const userEmail = user.email || 'email';
-
-                const newUser = new User(user.uid, instagram, userEmail, name, phone, false);
-                await setDoc(doc(userRef, user.uid), { ...newUser });
-            }
-        } catch (e) {
-            errorHandler(e);
-        }
-    };
-
     const userSignOut = async () => {
         try {
             await signOut(auth);
-
         } catch (e) {
             errorHandler(e);
         }
     };
 
-    // const getCurrentUser = async (uid: string) => {
-    //     try {
-    //         const userSnap = await getDoc(doc(userRef, uid).withConverter(userConverter));
-    //         userSnap.exists() && reduxDispatch(setCurrentUser(userSnap.data()));
-    //     } catch (e) {
-    //         errorHandler(e);
-    //     }
-    // };
-
-    const getUser = async (uid: string) => {
+    const getUserInfo = async () => {
         try {
-            const userSnap = await getDoc(doc(userRef, uid).withConverter(userConverter));
-            if (userSnap.exists()) {
-                return userSnap.data();
+            const user = auth.currentUser;
+            if (user) {
+                const userSnap = await getDoc(doc(userRef, user.uid).withConverter(userConverter));
+                if (userSnap.exists()) {
+                    reduxDispatch(setCurrentUserInfo(userSnap.data().info));
+                } else {
+                    const newUser = new User(user.uid, user.phoneNumber || '');
+                    await setDoc(doc(userRef, user.uid), { ...newUser });
+                    getUserInfo();
+                }
             }
         } catch (e) {
             errorHandler(e);
         }
-    };
+    }
 
     const setDescription = async (uid: string, value: string) => {
         try {
@@ -187,18 +159,7 @@ export default function useAuth() {
     };
 
     return {
-        createUser,
-        signIn,
+        getUserInfo,
         userSignOut,
-        // getCurrentUser,
-        getUser,
-        addHistoryItem,
-        removeHistoryItem,
-        setHictoryStatus,
-        setDescription,
-        setName,
-        setEmail,
-        setPhone,
-        setInst,
     }
 }

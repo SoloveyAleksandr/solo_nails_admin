@@ -41,14 +41,18 @@ export interface ISelectedDate {
   formate: string,
 }
 
-export interface IUser {
+export interface IUserInfo {
   uid: string,
-  instagram: string,
-  email: string,
   name: string,
   phone: string,
+  instagram: string,
   privateKey: string,
+}
+
+export interface IUser {
+  info: IUserInfo,
   refferals: string[],
+  inviteKey: string,
   history: {
     [key: string]: IHistoryItem
   },
@@ -64,4 +68,9 @@ export interface IHistoryItem {
     formate: string,
   },
   status: 'await' | 'success' | 'canceled',
+}
+
+export interface ICustomWindow extends Window {
+  recaptchaVerifier: any;
+  hellow: any;
 }

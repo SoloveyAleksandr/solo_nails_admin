@@ -1,52 +1,44 @@
 import { v4 } from "uuid";
-import { IHistoryItem, ITimeItem, IUser } from "../../interfaces";
+import { IHistoryItem, ITimeItem, IUser, IUserInfo } from "../../interfaces";
 
 export class User {
-  uid: string;
-  instagram: string;
-  email: string;
-  name: string;
-  phone: string;
-  privateKey: string;
+  info: IUserInfo;
   refferals: string[];
+  inviteKey: string;
   history: {
     [key: string]: IHistoryItem
   };
   description: string;
   isAdmin: boolean;
-  constructor(uid: string, instagram: string, email: string, name: string, phone: string, isAdmin: boolean) {
-    this.uid = uid;
-    this.instagram = instagram;
-    this.email = email;
-    this.name = name;
-    this.phone = phone;
-    this.privateKey = v4().slice(1, 7);
+  constructor(uid: string, phone: string) {
+    this.info = {
+      uid: uid,
+      name: '',
+      phone: phone,
+      instagram: '',
+      privateKey: v4().slice(1, 7),
+    }
     this.refferals = [];
-    this.isAdmin = isAdmin;
-    this.description = '';
+    this.inviteKey = '';
     this.history = {};
+    this.description = '';
+    this.isAdmin = false;
   }
 }
 
 export class UserConverter {
-  uid: string;
-  instagram: string;
-  email: string;
-  name: string;
-  phone: string;
-  privateKey: string;
+  info: IUserInfo;
   refferals: string[];
-  history: {};
+  inviteKey: string;
+  history: {
+    [key: string]: IHistoryItem
+  };
   description: string;
   isAdmin: boolean;
   constructor(user: IUser) {
-    this.uid = user.uid;
-    this.instagram = user.instagram;
-    this.email = user.email;
-    this.name = user.name;
-    this.phone = user.phone;
-    this.privateKey = user.privateKey;
+    this.info = user.info;
     this.refferals = user.refferals;
+    this.inviteKey = user.inviteKey;
     this.isAdmin = user.isAdmin;
     this.history = user.history;
     this.description = user.description;
@@ -56,12 +48,9 @@ export class UserConverter {
 export const userConverter = {
   toFirestore: (user: IUser) => {
     return {
-      uid: user.uid,
-      email: user.email,
-      name: user.name,
-      phone: user.phone,
-      privateKey: user.privateKey,
+      info: user.info,
       refferals: user.refferals,
+      inviteKey: user.inviteKey,
       history: user.history,
       description: user.description,
       isAdmin: user.isAdmin,
@@ -70,6 +59,37 @@ export const userConverter = {
   fromFirestore: (snapshot: any, options: object) => {
     const data: IUser = snapshot.data(options);
     return new UserConverter(data);
+  }
+};
+
+export class UserInfoConverter {
+  uid: string;
+  name: string;
+  phone: string;
+  instagram: string;
+  privateKey: string;
+  constructor(info: IUserInfo) {
+    this.uid = info.uid;
+    this.name = info.name;
+    this.phone = info.phone;
+    this.instagram = info.instagram;
+    this.privateKey = info.privateKey;
+  }
+}
+
+export const userInfoConverter = {
+  toFirestore: (info: IUserInfo) => {
+    return {
+      uid: info.uid,
+      name: info.name,
+      phone: info.phone,
+      instagram: info.instagram,
+      privateKey: info.privateKey,
+    };
+  },
+  fromFirestore: (snapshot: any, options: object) => {
+    const data: IUserInfo = snapshot.data(options);
+    return new UserInfoConverter(data);
   }
 };
 

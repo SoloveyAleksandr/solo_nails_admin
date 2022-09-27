@@ -1,4 +1,4 @@
-import React, { FC, ReactNode, useEffect } from 'react';
+import React, { FC } from 'react';
 import Container from '../Container/Container';
 
 import styles from './Header.module.scss';

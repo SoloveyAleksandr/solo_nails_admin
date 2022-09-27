@@ -5,17 +5,26 @@ import {
 } from "react-router-dom";
 import Calendar from "./screens/Calendar/Calendar";
 import Login from "./screens/Login/Login";
-import Registration from "./screens/Registration/Registration";
+import { useAppSelector } from "./store/hooks";
 
 function AppRouter() {
-  return (
-    <Routes>
-      <Route path="calendar" element={<Calendar />} />
-      <Route path="login" element={<Login />} />
-      <Route path="sign-in" element={<Registration />} />
-      <Route path="/*" element={<Navigate to={'/calendar'} />}></Route>
-    </Routes>
-  );
+  const appState = useAppSelector(store => store.AppStore);
+
+  if (appState.currentUserInfo.uid) {
+    return (
+      <Routes>
+        <Route path="calendar" element={<Calendar />} />
+        <Route path="/*" element={<Navigate to={'/calendar'} />}></Route>
+      </Routes>
+    )
+  } else {
+    return (
+      <Routes>
+        <Route path="login" element={<Login />} />
+        <Route path="/*" element={<Navigate to={'/login'} />}></Route>
+      </Routes>
+    )
+  }
 };
 
 export default AppRouter;

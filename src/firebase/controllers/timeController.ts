@@ -10,7 +10,7 @@ export default function useTime() {
   const appState = useAppSelector(store => store.AppStore);
 
   const { addReserve, deleteReserve } = useReserve();
-  const { addHistoryItem } = useAuth();
+  const { } = useAuth();
 
   const dayRef = collection(DB, 'day');
   const userRef = collection(DB, "user");
