@@ -1,5 +1,5 @@
 import { configureStore, createSlice } from '@reduxjs/toolkit';
-import { IDay, IDayItem, ISelectedDate, IUserInfo } from '../interfaces';
+import { IDay, IDayItem, ISelectedDate, IUser } from '../interfaces';
 
 const month: number = 0;
 const year: number = 0;
@@ -11,14 +11,16 @@ const selectedMonth: IDayItem[] = [];
 
 const isLoading: boolean = false;
 
-const currentUserInfo: IUserInfo = {
+const currentUserInfo: IUser = {
   uid: '',
   name: '',
   phone: '',
   instagram: '',
-  privateKey: '',
-  history: {},
   refferals: [],
+  history: {},
+  privateKey: '',
+  inviteKey: '',
+  description: '',
 };
 
 const isLogged: boolean = false;
@@ -87,7 +89,7 @@ const AppStore = createSlice({
       state.isLoading = action.payload;
     },
 
-    setCurrentUserInfo(state, action: { payload: IUserInfo }) {
+    setCurrentUserInfo(state, action: { payload: IUser }) {
       state.currentUserInfo = action.payload;
     },
 
@@ -97,9 +99,11 @@ const AppStore = createSlice({
         name: '',
         phone: '',
         instagram: '',
-        privateKey: '',
-        history: {},
         refferals: [],
+        history: {},
+        privateKey: '',
+        inviteKey: '',
+        description: '',
       };
     },
 

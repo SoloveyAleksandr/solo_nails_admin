@@ -48,7 +48,8 @@ export interface ISelectedDate {
   formate: string,
 }
 
-export interface IUserInfo {
+export interface IUser {
+  inviteKey: string,
   uid: string,
   name: string,
   phone: string,
@@ -58,13 +59,7 @@ export interface IUserInfo {
   },
   refferals: string[],
   privateKey: string,
-}
-
-export interface IUser {
-  info: IUserInfo,
-  inviteKey: string,
   description: string,
-  isAdmin: boolean,
 }
 
 export interface IHistoryItem {

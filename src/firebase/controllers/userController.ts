@@ -4,7 +4,7 @@ import { IHistoryItem, ITimeItem } from "../../interfaces";
 import { setCurrentUserInfo } from "../../store";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { app, authentification, DB } from "../firebase";
-import { History, User, userConverter, userInfoConverter } from "../services/userService";
+import { History, User, userConverter } from "../services/userService";
 import useReserve from "./reserveController";
 
 export default function useAuth() {
@@ -21,6 +21,7 @@ export default function useAuth() {
         interface IError {
             code: string;
         }
+        console.log(error);
         const isApiError = (x: any): x is IError => {
             return x.code ? x.code : false;
         };
@@ -57,7 +58,7 @@ export default function useAuth() {
             if (user) {
                 const userSnap = await getDoc(doc(userRef, user.uid).withConverter(userConverter));
                 if (userSnap.exists()) {
-                    reduxDispatch(setCurrentUserInfo(userSnap.data().info));
+                    reduxDispatch(setCurrentUserInfo(userSnap.data()));
                 } else {
                     const newUser = new User(user.uid, user.phoneNumber || '');
                     await setDoc(doc(userRef, user.uid), { ...newUser });
@@ -73,7 +74,7 @@ export default function useAuth() {
         try {
             const userSnap = await getDoc(doc(userRef, uid).withConverter(userConverter));
             if (userSnap.exists()) {
-                return userSnap.data().info;
+                return userSnap.data();
             }
         } catch (e) {
             errorHandler(e);
@@ -144,5 +145,7 @@ export default function useAuth() {
         getUserInfo,
         getCurrentUser,
         userSignOut,
+        setName,
+        setInst,
     }
 }
