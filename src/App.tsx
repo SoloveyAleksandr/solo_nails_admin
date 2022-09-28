@@ -32,10 +32,20 @@ function App() {
 
   useEffect(() => {
     if (appState.isLogged) {
-      (async () => await getCurrentUser())();
+      (async () => {
+        try {
+          await getCurrentUser();
+        } catch (e) {
+          console.log(e);
+        }
+      })();
+    }
+  }, [appState.isLogged]);
+
+  useEffect(() => {
+    if (appState.isLogged) {
       if (appState.currentUserInfo.name &&
-        appState.currentUserInfo.instagram &&
-        appState.currentUserInfo.phone) {
+        appState.currentUserInfo.instagram) {
         toast({
           title: `Здравствуйте, ${appState.currentUserInfo.name}`,
           status: 'success',
@@ -53,7 +63,7 @@ function App() {
         });
       }
     }
-  }, [appState.isLogged]);
+  }, [appState.currentUserInfo.uid]);
 
   return (
     <ChakraProvider>

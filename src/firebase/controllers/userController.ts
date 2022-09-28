@@ -59,6 +59,7 @@ export default function useAuth() {
                 const userSnap = await getDoc(doc(userRef, user.uid).withConverter(userConverter));
                 if (userSnap.exists()) {
                     reduxDispatch(setCurrentUserInfo(userSnap.data()));
+                    return;
                 } else {
                     const newUser = new User(user.uid, user.phoneNumber || '');
                     await setDoc(doc(userRef, user.uid), { ...newUser });

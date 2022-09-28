@@ -20,12 +20,15 @@ import { NavLink } from 'react-router-dom';
 const Calendar: FC = () => {
   const { userSignOut } = useAuth();
   const toast = useToast();
+  const { getCurrentUser } = useAuth();
 
   const reduxDispatch = useAppDispatch();
   const appState = useAppSelector(state => state.AppStore);
 
   const [prevMonthState, setPrevMonthState] = useState(0);
   const [menuIsActive, setMenuIsActive] = useState(false);
+
+ 
 
   useEffect(() => {
     const dateInfo = getMonth(appState.month, appState.year);
