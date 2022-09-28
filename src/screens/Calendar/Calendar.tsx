@@ -2,7 +2,7 @@ import { FC, useEffect, useState } from 'react';
 import Header from '../../components/Header/Header';
 import MonthSwitch from '../../components/MonthSwitch/MonthSwitch';
 import WeekDays from '../../components/WeekDays/WeekDays';
-import { resetCurrentUserInfo, setLoading, setMonth, setNextMonth, setPrevMonth, setSelectedDate, setSelectedMonth, setYear } from '../../store';
+import { resetCurrentUserInfo, setLoading, setMonth, setNextMonth, setPrevMonth, setSelectedDate, setSelectedMonth, setSelectedUserUID, setYear } from '../../store';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import MenuBtn from '../../components/MenuBtn/MenuBtn';
 import Logo from '../../components/Logo/Logo';
@@ -15,6 +15,7 @@ import useAuth from '../../firebase/controllers/userController';
 import { useToast } from '@chakra-ui/react';
 
 import styles from './Calendar.module.scss';
+import { NavLink } from 'react-router-dom';
 
 const Calendar: FC = () => {
   const { userSignOut } = useAuth();
@@ -63,6 +64,14 @@ const Calendar: FC = () => {
 
       <Menu isActive={menuIsActive}>
         <ul className={styles.menuList}>
+          <li
+            className={styles.menuItem}>
+            <NavLink
+              onClick={() => reduxDispatch(setSelectedUserUID(appState.currentUserInfo.uid))}
+              to={'/my-account'}>
+              мой аккаунт
+            </NavLink>
+          </li>
           <li
             className={styles.menuItem}
             onClick={() => signOut()}>

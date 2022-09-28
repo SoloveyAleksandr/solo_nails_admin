@@ -62,16 +62,6 @@ export default function useTime() {
     }
   };
 
-  // const getFreeTimes =async () => {
-  //   try {
-  //     const q = query(dayRef, where({
-  //       timeList: {}
-  //     }))
-  //     await getDocs()
-  //   } catch (e) {
-  //     errorHandler(e);
-  //   }
-  // }
   // const bookATime = async (
   //   timeItem: ITimeItem,
   //   comment: string,

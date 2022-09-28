@@ -17,6 +17,8 @@ const currentUserInfo: IUserInfo = {
   phone: '',
   instagram: '',
   privateKey: '',
+  history: {},
+  refferals: [],
 };
 
 const isLogged: boolean = false;
@@ -28,6 +30,8 @@ const selectedDay: IDay = {
   },
   timeList: {},
 };
+
+const selectedUserUID: string = '';
 
 const AppStore = createSlice({
   name: 'AppStore',
@@ -41,6 +45,7 @@ const AppStore = createSlice({
     currentUserInfo,
     isLogged,
     selectedDay,
+    selectedUserUID,
   },
 
   reducers: {
@@ -93,6 +98,8 @@ const AppStore = createSlice({
         phone: '',
         instagram: '',
         privateKey: '',
+        history: {},
+        refferals: [],
       };
     },
 
@@ -102,6 +109,10 @@ const AppStore = createSlice({
 
     setSelectedDay(state, action: { payload: IDay }) {
       state.selectedDay = action.payload;
+    },
+
+    setSelectedUserUID(state, action: { payload: string }) {
+      state.selectedUserUID = action.payload;
     },
 
   },
@@ -119,6 +130,7 @@ export const {
   resetCurrentUserInfo,
   setIsLogged,
   setSelectedDay,
+  setSelectedUserUID,
 } = AppStore.actions;
 
 const store = configureStore({

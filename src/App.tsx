@@ -14,7 +14,7 @@ function App() {
   const reduxDispatch = useAppDispatch();
   const appState = useAppSelector(state => state.AppStore);
   const toast = useToast();
-  const { getUserInfo } = useAuth();
+  const { getCurrentUser } = useAuth();
 
   onAuthStateChanged(authentification, async (user) => {
     try {
@@ -32,7 +32,7 @@ function App() {
 
   useEffect(() => {
     if (appState.isLogged) {
-      (async () => await getUserInfo())();
+      (async () => await getCurrentUser())();
       if (appState.currentUserInfo.name &&
         appState.currentUserInfo.instagram &&
         appState.currentUserInfo.phone) {

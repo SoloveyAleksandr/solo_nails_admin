@@ -53,16 +53,16 @@ export interface IUserInfo {
   name: string,
   phone: string,
   instagram: string,
+  history: {
+    [key: string]: IHistoryItem
+  },
+  refferals: string[],
   privateKey: string,
 }
 
 export interface IUser {
   info: IUserInfo,
-  refferals: string[],
   inviteKey: string,
-  history: {
-    [key: string]: IHistoryItem
-  },
   description: string,
   isAdmin: boolean,
 }

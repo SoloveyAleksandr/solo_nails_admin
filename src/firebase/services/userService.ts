@@ -3,11 +3,7 @@ import { IHistoryItem, ITimeItem, IUser, IUserInfo } from "../../interfaces";
 
 export class User {
   info: IUserInfo;
-  refferals: string[];
   inviteKey: string;
-  history: {
-    [key: string]: IHistoryItem
-  };
   description: string;
   isAdmin: boolean;
   constructor(uid: string, phone: string) {
@@ -16,11 +12,11 @@ export class User {
       name: '',
       phone: phone,
       instagram: '',
+      refferals: [],
+      history: {},
       privateKey: v4().slice(1, 7),
     }
-    this.refferals = [];
     this.inviteKey = '';
-    this.history = {};
     this.description = '';
     this.isAdmin = false;
   }
@@ -28,19 +24,13 @@ export class User {
 
 export class UserConverter {
   info: IUserInfo;
-  refferals: string[];
   inviteKey: string;
-  history: {
-    [key: string]: IHistoryItem
-  };
   description: string;
   isAdmin: boolean;
   constructor(user: IUser) {
     this.info = user.info;
-    this.refferals = user.refferals;
     this.inviteKey = user.inviteKey;
     this.isAdmin = user.isAdmin;
-    this.history = user.history;
     this.description = user.description;
   }
 }
@@ -49,9 +39,7 @@ export const userConverter = {
   toFirestore: (user: IUser) => {
     return {
       info: user.info,
-      refferals: user.refferals,
       inviteKey: user.inviteKey,
-      history: user.history,
       description: user.description,
       isAdmin: user.isAdmin,
     };
@@ -67,12 +55,18 @@ export class UserInfoConverter {
   name: string;
   phone: string;
   instagram: string;
+  history: {
+    [key: string]: IHistoryItem
+  };
+  refferals: string[];
   privateKey: string;
   constructor(info: IUserInfo) {
     this.uid = info.uid;
     this.name = info.name;
     this.phone = info.phone;
     this.instagram = info.instagram;
+    this.history = info.history;
+    this.refferals = info.refferals;
     this.privateKey = info.privateKey;
   }
 }
@@ -84,6 +78,8 @@ export const userInfoConverter = {
       name: info.name,
       phone: info.phone,
       instagram: info.instagram,
+      history: info.history,
+      refferals: info.refferals,
       privateKey: info.privateKey,
     };
   },
