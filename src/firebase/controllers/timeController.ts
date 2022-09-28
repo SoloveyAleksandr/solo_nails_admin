@@ -1,4 +1,4 @@
-import { collection, doc, updateDoc, deleteField, setDoc, deleteDoc } from "firebase/firestore";
+import { collection, doc, updateDoc, deleteField, setDoc, deleteDoc, getDocs, query, where } from "firebase/firestore";
 import { ITimeItem } from "../../interfaces";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { DB } from "../firebase";
@@ -10,7 +10,6 @@ export default function useTime() {
   const appState = useAppSelector(store => store.AppStore);
 
   const { addReserve, deleteReserve } = useReserve();
-  const { } = useAuth();
 
   const dayRef = collection(DB, 'day');
   const userRef = collection(DB, "user");
@@ -41,23 +40,38 @@ export default function useTime() {
     }
   };
 
-  // const removeTime = async (item: ITimeItem) => {
+  const removeTime = async (item: ITimeItem) => {
+    try {
+      const timeRef = doc(dayRef, item.date.full);
+      await updateDoc(timeRef, {
+        ['timeList.' + [item.id]]: deleteField()
+      });
+    } catch (e) {
+      errorHandler(e);
+    }
+  };
+
+  const editTime = async (item: ITimeItem) => {
+    try {
+      const timeRef = doc(dayRef, item.date.full);
+      await updateDoc(timeRef, {
+        ['timeList.' + [item.id]]: item
+      });
+    } catch (e) {
+      errorHandler(e);
+    }
+  };
+
+  // const getFreeTimes =async () => {
   //   try {
-  //     const timeRef = doc(dayRef, item.date.full);
-  //     await updateDoc(timeRef, {
-  //       ['timeList.' + [item.id]]: deleteField()
-  //     });
-  //     await deleteReserve(item.id);
-  //     if (item.client.uid) {
-  //       await updateDoc(doc(userRef, item.client.uid), {
-  //         ['history.' + [item.id]]: deleteField(),
-  //       });
-  //     }
+  //     const q = query(dayRef, where({
+  //       timeList: {}
+  //     }))
+  //     await getDocs()
   //   } catch (e) {
   //     errorHandler(e);
   //   }
-  // };
-
+  // }
   // const bookATime = async (
   //   timeItem: ITimeItem,
   //   comment: string,
@@ -78,5 +92,7 @@ export default function useTime() {
 
   return {
     addTime,
+    removeTime,
+    editTime,
   }
 }

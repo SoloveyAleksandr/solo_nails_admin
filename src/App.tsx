@@ -46,7 +46,7 @@ function App() {
       } else {
         toast({
           title: 'Здравствуйте, пожалуйста, заполните данные профиля',
-          status: 'success',
+          status: 'warning',
           isClosable: true,
           duration: 30000,
           position: 'top',

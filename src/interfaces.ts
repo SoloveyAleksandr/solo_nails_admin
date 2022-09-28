@@ -38,6 +38,7 @@ export interface ITimeItem {
     status: boolean,
     name: string,
     instagram: string,
+    phoneNumber: string,
     comment: string,
   }
 }

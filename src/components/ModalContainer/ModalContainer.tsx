@@ -31,9 +31,11 @@ const ModalConteiner: FC<IModalConteiner> = ({
       isCentered={true} >
       <ModalOverlay
         className={styles.modalOverlay} />
-      <ModalContent w={'calc(100% - 30px)'} maxW={'calc(450px)'}>
+      <ModalContent
+        w={'calc(100% - 30px)'}
+        maxW={'calc(450px)'}>
         <ModalHeader></ModalHeader>
-        <ModalCloseButton />
+        <ModalCloseButton color={'#000'} />
         <ModalBody pb={6}>
           {children}
         </ModalBody>

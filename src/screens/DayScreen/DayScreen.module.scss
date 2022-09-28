@@ -22,6 +22,13 @@
 }
 
 .modal {
+  &Title {
+    font-size: 20px;
+    font-weight: 700;
+    text-align: center;
+    display: block;
+  }
+
   &List {
     list-style: none;
     &Item + &Item {
@@ -78,6 +85,10 @@
     align-items: center;
     justify-content: space-between;
     background-color: $white20;
+
+    &.reserved {
+      box-shadow: 0 0 15px $white50;
+    }
 
     &Time {
       font-size: 20px;

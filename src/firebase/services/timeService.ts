@@ -17,6 +17,7 @@ export class Time {
     status: boolean,
     name: string,
     instagram: string,
+    phoneNumber: string,
     comment: string,
   }
 
@@ -30,8 +31,9 @@ export class Time {
       status: boolean,
       name: string,
       instagram: string,
+      phoneNumber: string,
       comment: string,
-    }
+    },
   ) {
     this.id = v4().slice(0, 10);
     this.isReserved = false;
@@ -45,6 +47,7 @@ export class Time {
       status: false,
       name: '',
       instagram: '',
+      phoneNumber: '',
       comment: '',
     }
   }
@@ -66,6 +69,7 @@ export class TimeConverter {
     status: boolean,
     name: string,
     instagram: string,
+    phoneNumber: string,
     comment: string,
   }
   constructor(time: ITimeItem) {
