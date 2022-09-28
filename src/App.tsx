@@ -53,14 +53,25 @@ function App() {
           duration: 5000,
           position: 'top',
         });
-      } else {
+        return;
+      } else if (!appState.currentUserInfo.name) {
         toast({
-          title: 'Здравствуйте, пожалуйста, заполните данные профиля',
+          title: 'Здравствуйте, пожалуйста, добавьте свое ИМЯ в профиль',
           status: 'warning',
           isClosable: true,
           duration: 30000,
           position: 'top',
         });
+        return;
+      } else if (!appState.currentUserInfo.instagram) {
+        toast({
+          title: 'Здравствуйте, пожалуйста, добавьте свой INSTARGAM в профиль',
+          status: 'warning',
+          isClosable: true,
+          duration: 30000,
+          position: 'top',
+        });
+        return;
       }
     }
   }, [appState.currentUserInfo.uid]);
