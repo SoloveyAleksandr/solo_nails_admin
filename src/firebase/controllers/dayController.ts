@@ -14,11 +14,13 @@ export default function useDay() {
     interface IError {
       code: string;
     }
+    console.log(error);
     const isApiError = (x: any): x is IError => {
       return x.code ? x.code : false;
     };
     if (isApiError(error)) {
       const errorCode = error.code;
+      console.log(errorCode);
     }
   };
 

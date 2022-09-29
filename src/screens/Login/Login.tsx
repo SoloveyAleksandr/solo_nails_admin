@@ -149,7 +149,7 @@ const Login: FC = () => {
                 <FormInput
                   title="Номер телефона *"
                   value={phoneFormate}
-                  placeholder='(29) 235-25-25'
+                  placeholder='29 235-25-25'
                   onChange={e => setPhoneNumber(e)}
                   addon='+375'
                   info="Номер телефона будет использоваться для входа в аккаунт" />

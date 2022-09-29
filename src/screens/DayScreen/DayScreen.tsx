@@ -27,9 +27,11 @@ import { ITimeItem } from "../../interfaces";
 
 const DayScreen: FC = () => {
   const {
-    addTime,
-    removeTime,
-    editTime,
+    addTimeToDay,
+    addTimeToFreeTime,
+    addTimeToReserves,
+    removeTimeFromDay,
+    editTimeInDay,
   } = useTime();
   const { getDay } = useDay();
   const toast = useToast();
@@ -103,16 +105,29 @@ const DayScreen: FC = () => {
         }
       }
       const newTimeItem = isOffline ?
-        new Time(time, appState.selectedDate, {
-          status: true,
-          name: name,
-          instagram: inst,
-          phoneNumber: phoneNumber,
-          comment: comment,
-        }) : new Time(time, appState.selectedDate);
+        new Time({
+          time: time,
+          date: appState.selectedDate,
+          isReserved: true,
+          isOffline: {
+            status: true,
+            name: name,
+            instagram: inst,
+            phoneNumber: phoneNumber,
+            comment: comment,
+          }
+        }) : new Time({
+          time: time,
+          date: appState.selectedDate,
+        });
       reduxDispatch(setLoading(true));
       closeModal();
-      await addTime(appState.selectedDate.full, { ...newTimeItem });
+      await addTimeToDay({ ...newTimeItem });
+      if (isOffline) {
+        await addTimeToReserves({ ...newTimeItem });
+      } else {
+        await addTimeToFreeTime({ ...newTimeItem });
+      }
       await getDay();
       toast({
         title: `Добавлена запись на ${newTimeItem.date.formate} ${newTimeItem.time}`,
@@ -172,30 +187,23 @@ const DayScreen: FC = () => {
           return;
         }
       }
-      const newTimeItem = {
+      const newTimeItem = new Time({
         id: timeItem.id,
-        isReserved: timeItem.isReserved,
         time: time,
-        date: timeItem.date,
-        client: timeItem.client,
-        isOffline: isOffline ?
-          {
-            status: isOffline,
-            name: name,
-            instagram: inst,
-            phoneNumber: phoneNumber,
-            comment: comment,
-          } : {
-            status: false,
-            name: '',
-            instagram: '',
-            phoneNumber: '',
-            comment: '',
-          }
-      }
+        date: appState.selectedDate,
+        isReserved: isOffline,
+        isOffline: {
+          status: true,
+          name: name,
+          instagram: inst,
+          phoneNumber: phoneNumber,
+          comment: comment,
+        }
+      });
+
       reduxDispatch(setLoading(true));
       closeModal();
-      await editTime(newTimeItem);
+      await editTimeInDay(newTimeItem);
       await getDay();
       toast({
         title: `Запись успешно изменена`,
@@ -222,7 +230,7 @@ const DayScreen: FC = () => {
       setDeleteConfirm(false);
       reduxDispatch(setLoading(true));
       timeItem &&
-        await removeTime(timeItem);
+        await removeTimeFromDay(timeItem);
       await getDay();
       reduxDispatch(setLoading(false));
       toast({

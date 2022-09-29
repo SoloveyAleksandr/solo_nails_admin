@@ -22,28 +22,36 @@ export class Time {
   }
 
   constructor(
-    time: string,
-    date: {
-      full: string,
-      formate: string
-    },
-    isOffline?: {
-      status: boolean,
-      name: string,
-      instagram: string,
-      phoneNumber: string,
-      comment: string,
-    },
+    props: {
+      id?: string,
+      time: string,
+      date: {
+        full: string,
+        formate: string
+      },
+      isReserved?: boolean,
+      client?: {
+        uid: string,
+        confirmed: boolean,
+      },
+      isOffline?: {
+        status: boolean,
+        name: string,
+        instagram: string,
+        phoneNumber: string,
+        comment: string,
+      },
+    }
   ) {
-    this.id = v4().slice(0, 10);
-    this.isReserved = false;
-    this.date = date;
-    this.time = time;
-    this.client = {
+    this.id = props.id || v4().slice(0, 10);
+    this.isReserved = props.isReserved || false;
+    this.date = props.date
+    this.time = props.time;
+    this.client = props.client || {
       uid: '',
       confirmed: false,
     };
-    this.isOffline = isOffline || {
+    this.isOffline = props.isOffline || {
       status: false,
       name: '',
       instagram: '',
