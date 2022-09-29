@@ -52,7 +52,7 @@ export default function useTime() {
       const id = time.id;
       const date = time.date.full;
       const timeRef = doc(freeTimeRef, date);
-      await setDoc(timeRef, {
+      await updateDoc(timeRef, {
         [id]: time
       })
     } catch (e) {
@@ -65,7 +65,7 @@ export default function useTime() {
       const id = time.id;
       const date = time.date.full;
       const timeRef = doc(reservesRef, date);
-      await setDoc(timeRef, {
+      await updateDoc(timeRef, {
         [id]: time
       })
     } catch (e) {
@@ -91,7 +91,7 @@ export default function useTime() {
     try {
       const id = time.id;
       const date = time.date.full;
-      const timeRef = doc(dayRef, date);
+      const timeRef = doc(freeTimeRef, date);
       await updateDoc(timeRef, {
         [id]: time
       });
@@ -104,7 +104,7 @@ export default function useTime() {
     try {
       const id = time.id;
       const date = time.date.full;
-      const timeRef = doc(dayRef, date);
+      const timeRef = doc(reservesRef, date);
       await updateDoc(timeRef, {
         [id]: time
       });
@@ -128,10 +128,11 @@ export default function useTime() {
 
   const removeTimeFromFreeTime = async (time: ITimeItem) => {
     try {
+      const id = time.id;
       const date = time.date.full;
       const timeRef = doc(freeTimeRef, date);
       await updateDoc(timeRef, {
-        [time.id]: deleteField()
+        [id]: deleteField()
       });
     } catch (e) {
       errorHandler(e);
@@ -140,10 +141,11 @@ export default function useTime() {
 
   const removeTimeFromReserves = async (time: ITimeItem) => {
     try {
+      const id = time.id;
       const date = time.date.full;
       const timeRef = doc(reservesRef, date);
       await updateDoc(timeRef, {
-        [time.id]: deleteField()
+        [id]: deleteField()
       });
     } catch (e) {
       errorHandler(e);

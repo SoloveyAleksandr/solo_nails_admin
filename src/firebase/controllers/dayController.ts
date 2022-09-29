@@ -9,6 +9,8 @@ export default function useDay() {
   const reduxDispatch = useAppDispatch();
 
   const dayRef = collection(DB, 'day');
+  const freeTimeRef = collection(DB, 'freeTime');
+  const reservesRef = collection(DB, 'reserves');
 
   const errorHandler = (error: any) => {
     interface IError {
@@ -30,6 +32,8 @@ export default function useDay() {
   }) => {
     try {
       await setDoc(doc(dayRef, date.full), { ...new Day(date) });
+      await setDoc(doc(freeTimeRef, date.full), {});
+      await setDoc(doc(reservesRef, date.full), {});
     } catch (e) {
       errorHandler(e);
     }

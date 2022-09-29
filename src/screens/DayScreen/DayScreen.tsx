@@ -30,8 +30,15 @@ const DayScreen: FC = () => {
     addTimeToDay,
     addTimeToFreeTime,
     addTimeToReserves,
-    removeTimeFromDay,
+
     editTimeInDay,
+    editTimeInFreeTime,
+    editTimeInReserves,
+
+    removeTimeFromDay,
+    removeTimeFromFreeTime,
+    removeTimeFromReserves,
+
   } = useTime();
   const { getDay } = useDay();
   const toast = useToast();
@@ -190,10 +197,10 @@ const DayScreen: FC = () => {
       const newTimeItem = new Time({
         id: timeItem.id,
         time: time,
-        date: appState.selectedDate,
+        date: timeItem.date,
         isReserved: isOffline,
         isOffline: {
-          status: true,
+          status: isOffline,
           name: name,
           instagram: inst,
           phoneNumber: phoneNumber,
@@ -203,7 +210,27 @@ const DayScreen: FC = () => {
 
       reduxDispatch(setLoading(true));
       closeModal();
-      await editTimeInDay(newTimeItem);
+      await editTimeInDay({ ...newTimeItem });
+
+      if (timeItem.isReserved && newTimeItem.isReserved) {
+        await editTimeInReserves({ ...newTimeItem });
+      }
+      if (timeItem.isReserved && !newTimeItem.isReserved) {
+        //удалить из резервов
+        await removeTimeFromReserves({ ...newTimeItem });
+        // добавить в freeTime
+        await addTimeToFreeTime({ ...newTimeItem });
+      }
+      if (!timeItem.isReserved && newTimeItem.isReserved) {
+        //del from freeTime
+        await removeTimeFromFreeTime({ ...newTimeItem });
+        // add to reserves
+        await addTimeToReserves({ ...newTimeItem });
+      }
+      if (!timeItem.isReserved && !newTimeItem.isReserved) {
+        await editTimeInFreeTime({ ...newTimeItem });
+      }
+
       await getDay();
       toast({
         title: `Запись успешно изменена`,
@@ -229,8 +256,12 @@ const DayScreen: FC = () => {
     try {
       setDeleteConfirm(false);
       reduxDispatch(setLoading(true));
-      timeItem &&
-        await removeTimeFromDay(timeItem);
+      await removeTimeFromDay(timeItem);
+      if (timeItem.isReserved) {
+        await removeTimeFromReserves(timeItem);
+      } else {
+        await removeTimeFromFreeTime(timeItem);
+      }
       await getDay();
       reduxDispatch(setLoading(false));
       toast({
