@@ -14,7 +14,7 @@ function App() {
   const reduxDispatch = useAppDispatch();
   const appState = useAppSelector(state => state.AppStore);
   const toast = useToast();
-  const { getUserInfo } = useAuth();
+  const { getCurrentUser } = useAuth();
 
   onAuthStateChanged(authentification, async (user) => {
     try {
@@ -32,10 +32,20 @@ function App() {
 
   useEffect(() => {
     if (appState.isLogged) {
-      (async () => await getUserInfo())();
+      (async () => {
+        try {
+          await getCurrentUser();
+        } catch (e) {
+          console.log(e);
+        }
+      })();
+    }
+  }, [appState.isLogged]);
+
+  useEffect(() => {
+    if (appState.isLogged) {
       if (appState.currentUserInfo.name &&
-        appState.currentUserInfo.instagram &&
-        appState.currentUserInfo.phone) {
+        appState.currentUserInfo.instagram) {
         toast({
           title: `Здравствуйте, ${appState.currentUserInfo.name}`,
           status: 'success',
@@ -43,17 +53,28 @@ function App() {
           duration: 5000,
           position: 'top',
         });
-      } else {
+        return;
+      } else if (!appState.currentUserInfo.name) {
         toast({
-          title: 'Здравствуйте, пожалуйста, заполните данные профиля',
-          status: 'success',
+          title: 'Здравствуйте, пожалуйста, добавьте свое ИМЯ в профиль',
+          status: 'warning',
           isClosable: true,
           duration: 30000,
           position: 'top',
         });
+        return;
+      } else if (!appState.currentUserInfo.instagram) {
+        toast({
+          title: 'Здравствуйте, пожалуйста, добавьте свой INSTARGAM в профиль',
+          status: 'warning',
+          isClosable: true,
+          duration: 30000,
+          position: 'top',
+        });
+        return;
       }
     }
-  }, [appState.isLogged]);
+  }, [appState.currentUserInfo.uid]);
 
   return (
     <ChakraProvider>

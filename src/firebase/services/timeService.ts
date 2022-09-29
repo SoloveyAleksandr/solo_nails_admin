@@ -11,24 +11,53 @@ export class Time {
   };
   client: {
     uid: string,
-    comment: string,
+    confirmed: boolean,
   };
+  isOffline: {
+    status: boolean,
+    name: string,
+    instagram: string,
+    phoneNumber: string,
+    comment: string,
+  }
 
   constructor(
-    time: string,
-    date: {
-      full: string,
-      formate: string
+    props: {
+      id?: string,
+      time: string,
+      date: {
+        full: string,
+        formate: string
+      },
+      isReserved?: boolean,
+      client?: {
+        uid: string,
+        confirmed: boolean,
+      },
+      isOffline?: {
+        status: boolean,
+        name: string,
+        instagram: string,
+        phoneNumber: string,
+        comment: string,
+      },
     }
   ) {
-    this.id = v4().slice(0, 10);
-    this.isReserved = false;
-    this.date = date;
-    this.time = time;
-    this.client = {
+    this.id = props.id || v4().slice(0, 10);
+    this.isReserved = props.isReserved || false;
+    this.date = props.date
+    this.time = props.time;
+    this.client = props.client || {
       uid: '',
-      comment: '',
+      confirmed: false,
     };
+    this.isOffline = props.isOffline || {
+      status: false,
+      name: '',
+      instagram: '',
+      phoneNumber: '',
+      comment: '',
+    }
   }
 }
 
@@ -42,15 +71,22 @@ export class TimeConverter {
   };
   client: {
     uid: string,
+    confirmed: boolean,
+  }
+  isOffline: {
+    status: boolean,
+    name: string,
+    instagram: string,
+    phoneNumber: string,
     comment: string,
-  };
-
+  }
   constructor(time: ITimeItem) {
     this.id = time.id;
     this.isReserved = time.isReserved;
     this.date = time.date;
     this.time = time.time;
     this.client = time.client;
+    this.isOffline = time.isOffline;
   }
 }
 
@@ -62,6 +98,7 @@ export const timeConverter = {
       time: time.time,
       date: time.date,
       client: time.client,
+      isOffline: time.isOffline
     };
   },
   fromFirestore: (snapshot: any, options: object) => {

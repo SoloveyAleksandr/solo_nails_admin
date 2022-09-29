@@ -32,8 +32,15 @@ export interface ITimeItem {
   },
   client: {
     uid: string,
-    comment: string,
+    confirmed: boolean,
   },
+  isOffline: {
+    status: boolean,
+    name: string,
+    instagram: string,
+    phoneNumber: string,
+    comment: string,
+  }
 }
 
 export interface ISelectedDate {
@@ -41,23 +48,18 @@ export interface ISelectedDate {
   formate: string,
 }
 
-export interface IUserInfo {
+export interface IUser {
+  inviteKey: string,
   uid: string,
   name: string,
   phone: string,
   instagram: string,
-  privateKey: string,
-}
-
-export interface IUser {
-  info: IUserInfo,
-  refferals: string[],
-  inviteKey: string,
   history: {
     [key: string]: IHistoryItem
   },
+  refferals: string[],
+  privateKey: string,
   description: string,
-  isAdmin: boolean,
 }
 
 export interface IHistoryItem {

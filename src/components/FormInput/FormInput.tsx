@@ -61,11 +61,16 @@ const FormInput: FC<IFormInput> = ({
         <div className={styles.inputWrapper}>
           {addon &&
             <InputLeftAddon
+              border={'2px'}
+              borderColor={'rgba(15, 15, 15, 1)'}
               bgColor={'rgba(255, 255, 255, 0.5)'}
               fontSize={'16px'}
               className={styles.phoneAddon}
               children='+375' />}
           <Input
+            outline={'none'}
+            border={'2px'}
+            borderColor={'rgba(15, 15, 15, 1)'}
             className={addon ? `${styles.input} ${styles.addon}` : styles.input}
             placeholder={placeholder}
             value={value}

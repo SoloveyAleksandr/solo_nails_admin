@@ -1,13 +1,14 @@
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, User as FBUser } from "firebase/auth";
-import { collection, deleteField, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { collection, deleteField, doc, getDoc, getDocs, query, setDoc, updateDoc, where } from "firebase/firestore";
 import { IHistoryItem, ITimeItem } from "../../interfaces";
 import { setCurrentUserInfo } from "../../store";
-import { useAppDispatch } from "../../store/hooks";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { app, authentification, DB } from "../firebase";
-import { History, User, userConverter, userInfoConverter } from "../services/userService";
+import { History, User, userConverter } from "../services/userService";
 import useReserve from "./reserveController";
 
 export default function useAuth() {
+    const appState = useAppSelector(s => s.AppStore);
     const reduxDispatch = useAppDispatch();
     const auth = authentification;
 
@@ -20,6 +21,7 @@ export default function useAuth() {
         interface IError {
             code: string;
         }
+        console.log(error);
         const isApiError = (x: any): x is IError => {
             return x.code ? x.code : false;
         };
@@ -50,29 +52,31 @@ export default function useAuth() {
         }
     };
 
-    const getUserInfo = async () => {
+    const getCurrentUser = async () => {
         try {
             const user = auth.currentUser;
             if (user) {
                 const userSnap = await getDoc(doc(userRef, user.uid).withConverter(userConverter));
                 if (userSnap.exists()) {
-                    reduxDispatch(setCurrentUserInfo(userSnap.data().info));
+                    reduxDispatch(setCurrentUserInfo(userSnap.data()));
+                    return;
                 } else {
                     const newUser = new User(user.uid, user.phoneNumber || '');
                     await setDoc(doc(userRef, user.uid), { ...newUser });
-                    getUserInfo();
+                    getCurrentUser();
                 }
             }
         } catch (e) {
             errorHandler(e);
         }
-    }
+    };
 
-    const setDescription = async (uid: string, value: string) => {
+    const getUserInfo = async (uid: string) => {
         try {
-            await updateDoc(doc(userRef, uid), {
-                ['description']: value,
-            });
+            const userSnap = await getDoc(doc(userRef, uid).withConverter(userConverter));
+            if (userSnap.exists()) {
+                return userSnap.data();
+            }
         } catch (e) {
             errorHandler(e);
         }
@@ -82,26 +86,6 @@ export default function useAuth() {
         try {
             await updateDoc(doc(userRef, uid), {
                 ['name']: value,
-            });
-        } catch (e) {
-            errorHandler(e);
-        }
-    };
-
-    const setPhone = async (uid: string, value: string) => {
-        try {
-            await updateDoc(doc(userRef, uid), {
-                ['phone']: value,
-            });
-        } catch (e) {
-            errorHandler(e);
-        }
-    };
-
-    const setEmail = async (uid: string, value: string) => {
-        try {
-            await updateDoc(doc(userRef, uid), {
-                ['email']: value,
             });
         } catch (e) {
             errorHandler(e);
@@ -160,6 +144,9 @@ export default function useAuth() {
 
     return {
         getUserInfo,
+        getCurrentUser,
         userSignOut,
+        setName,
+        setInst,
     }
 }

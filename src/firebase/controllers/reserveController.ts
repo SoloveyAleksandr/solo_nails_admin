@@ -3,7 +3,7 @@ import { ITimeItem } from "../../interfaces";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { DB } from "../firebase";
 import { sortReserves } from "../services/dayService";
-import { timeConverter } from "../services/timeService";
+// import { timeConverter } from "../services/timeService";
 
 export default function useReserve() {
   const reduxDispatch = useAppDispatch();
@@ -40,18 +40,18 @@ export default function useReserve() {
     }
   };
 
-  const getAllReserves = async () => {
-    try {
-      const arr: ITimeItem[] = [];
-      const reserves = await getDocs(reserveRef.withConverter(timeConverter));
-      reserves.forEach(item => {
-        arr.push(item.data());
-      });
-      return arr.sort(sortReserves);
-    } catch (e) {
-      errorHandler(e);
-    }
-  };
+  // const getAllReserves = async () => {
+  //   try {
+  //     const arr: ITimeItem[] = [];
+  //     const reserves = await getDocs(reserveRef.withConverter(timeConverter));
+  //     reserves.forEach(item => {
+  //       arr.push(item.data());
+  //     });
+  //     return arr.sort(sortReserves);
+  //   } catch (e) {
+  //     errorHandler(e);
+  //   }
+  // };
 
   // const setReserve = async (id: string, comment: string) => {
   //   try {
@@ -69,6 +69,5 @@ export default function useReserve() {
   return {
     addReserve,
     deleteReserve,
-    getAllReserves,
   }
 }

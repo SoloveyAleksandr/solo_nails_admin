@@ -1,4 +1,5 @@
 import { collection, doc, getDoc, setDoc, updateDoc, deleteField } from "firebase/firestore";
+import { setSelectedDay } from "../../store";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { DB } from "../firebase";
 import { Day, dayConverter, sortTimesList } from "../services/dayService";
@@ -8,16 +9,20 @@ export default function useDay() {
   const reduxDispatch = useAppDispatch();
 
   const dayRef = collection(DB, 'day');
+  const freeTimeRef = collection(DB, 'freeTime');
+  const reservesRef = collection(DB, 'reserves');
 
   const errorHandler = (error: any) => {
     interface IError {
       code: string;
     }
+    console.log(error);
     const isApiError = (x: any): x is IError => {
       return x.code ? x.code : false;
     };
     if (isApiError(error)) {
       const errorCode = error.code;
+      console.log(errorCode);
     }
   };
 
@@ -27,6 +32,8 @@ export default function useDay() {
   }) => {
     try {
       await setDoc(doc(dayRef, date.full), { ...new Day(date) });
+      await setDoc(doc(freeTimeRef, date.full), {});
+      await setDoc(doc(reservesRef, date.full), {});
     } catch (e) {
       errorHandler(e);
     }
@@ -38,7 +45,7 @@ export default function useDay() {
       const formateDate = appState.selectedDate.formate;
       const daySnap = await getDoc(doc(dayRef, fullDate).withConverter(dayConverter));
       if (daySnap.exists()) {
-        // reduxDispatch(setSelectedDay(daySnap.data()));
+        reduxDispatch(setSelectedDay(daySnap.data()));
       } else {
         await addDay({
           full: fullDate,

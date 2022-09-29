@@ -1,9 +1,11 @@
+@import "../../var";
+
 .monthSwitch {
   display: grid;
   grid-template-columns: 30% 40% 30%;
   grid-template-rows: repeat(1);
   padding: 10px 0 10px 0;
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: 1px solid $white50;
   border-left: none;
   border-right: none;
   position: relative;
@@ -13,14 +15,14 @@
   text-transform: uppercase;
   font-size: 17px;
   font-weight: 900;
-  color: rgba(255, 255, 255, 0.5);
+  color: $white50;
   min-width: 60px;
   display: flex;
   align-items: center;
   justify-content: center;
   &.current {
     font-size: 28px;
-    color: rgb(255, 255, 255)
+    color: $white;
   }
 }
 
@@ -35,7 +37,7 @@
 }
 
 .year span {
-  font-family: 'Teko';
+  font-family: "Teko";
   font-weight: 900;
   font-size: 18px;
 }
