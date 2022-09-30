@@ -40,7 +40,36 @@
 }
 
 .btnWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
   .btn+.btn {
     margin-left: 15px;
+  }
+}
+
+.info {
+  &List {
+    list-style: none;
+  }
+
+  &Item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 15px;
+  }
+
+  &Title {
+    text-transform: uppercase;
+  }
+
+  &Comment {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 15px;
   }
 }
