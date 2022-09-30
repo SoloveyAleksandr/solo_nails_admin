@@ -28,7 +28,7 @@ const Calendar: FC = () => {
   const [prevMonthState, setPrevMonthState] = useState(0);
   const [menuIsActive, setMenuIsActive] = useState(false);
 
- 
+
 
   useEffect(() => {
     const dateInfo = getMonth(appState.month, appState.year);
@@ -67,6 +67,13 @@ const Calendar: FC = () => {
 
       <Menu isActive={menuIsActive}>
         <ul className={styles.menuList}>
+          <li
+            className={styles.menuItem}>
+            <NavLink
+              to={'/reserved'}>
+              подтвержднные записи
+            </NavLink>
+          </li>
           <li
             className={styles.menuItem}>
             <NavLink

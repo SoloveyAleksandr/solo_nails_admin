@@ -1,0 +1,46 @@
+@import "../../var";
+
+.days {
+  &List {
+    list-style: none;
+  }
+
+  &Item {
+    margin-top: 15px;
+    border: 1px solid $white;
+    border-radius: 8px;
+
+    &Header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: $white;
+      font-size: 18px;
+      font-weight: 700;
+    }
+  }
+}
+
+.time {
+  &List {
+    list-style: none;
+
+    .timeItem+.timeItem {
+      margin-top: 10px;
+    }
+  }
+
+  &Item {
+    &Title {
+      font-size: 16px;
+      font-weight: 700;
+      color: $white;
+    }
+  }
+}
+
+.btnWrapper {
+  .btn+.btn {
+    margin-left: 15px;
+  }
+}

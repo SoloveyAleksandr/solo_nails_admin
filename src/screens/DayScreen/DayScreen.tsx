@@ -27,13 +27,9 @@ import { ITimeItem } from "../../interfaces";
 
 const DayScreen: FC = () => {
   const {
-    addTimeToDay,
-    addTimeToFreeTime,
-    addTimeToReserves,
-
-    editTimeInDay,
-    editTimeInFreeTime,
-    editTimeInReserves,
+    setTimeToDay,
+    setTimeToFreeTime,
+    setTimeToReserves,
 
     removeTimeFromDay,
     removeTimeFromFreeTime,
@@ -100,9 +96,27 @@ const DayScreen: FC = () => {
   const addNewTime = async () => {
     try {
       if (isOffline) {
-        if (!name || !inst) {
+        if (!name && !inst) {
           toast({
-            title: 'Заполните данные клиента или уберите метку "оффлайн"',
+            title: 'Добавьте ИМЯ и КОНТАКТЫ клиента или уберите метку "оффлайн"',
+            status: 'warning',
+            isClosable: true,
+            duration: 5000,
+            position: 'top',
+          });
+          return;
+        } else if (!name) {
+          toast({
+            title: 'Добавьте ИМЯ клиента или уберите метку "оффлайн"',
+            status: 'warning',
+            isClosable: true,
+            duration: 5000,
+            position: 'top',
+          });
+          return;
+        } else if (!inst && !phoneNumber) {
+          toast({
+            title: 'Добавьте INSTAGRAM или НОМЕР ТЕЛЕФОНА клиента или уберите метку "оффлайн"',
             status: 'warning',
             isClosable: true,
             duration: 5000,
@@ -129,11 +143,11 @@ const DayScreen: FC = () => {
         });
       reduxDispatch(setLoading(true));
       closeModal();
-      await addTimeToDay({ ...newTimeItem });
+      await setTimeToDay({ ...newTimeItem });
       if (isOffline) {
-        await addTimeToReserves({ ...newTimeItem });
+        await setTimeToReserves({ ...newTimeItem });
       } else {
-        await addTimeToFreeTime({ ...newTimeItem });
+        await setTimeToFreeTime({ ...newTimeItem });
       }
       await getDay();
       toast({
@@ -210,25 +224,25 @@ const DayScreen: FC = () => {
 
       reduxDispatch(setLoading(true));
       closeModal();
-      await editTimeInDay({ ...newTimeItem });
+      await setTimeToDay({ ...newTimeItem });
 
       if (timeItem.isReserved && newTimeItem.isReserved) {
-        await editTimeInReserves({ ...newTimeItem });
+        await setTimeToReserves({ ...newTimeItem });
       }
       if (timeItem.isReserved && !newTimeItem.isReserved) {
         //удалить из резервов
         await removeTimeFromReserves({ ...newTimeItem });
         // добавить в freeTime
-        await addTimeToFreeTime({ ...newTimeItem });
+        await setTimeToFreeTime({ ...newTimeItem });
       }
       if (!timeItem.isReserved && newTimeItem.isReserved) {
         //del from freeTime
         await removeTimeFromFreeTime({ ...newTimeItem });
         // add to reserves
-        await addTimeToReserves({ ...newTimeItem });
+        await setTimeToReserves({ ...newTimeItem });
       }
       if (!timeItem.isReserved && !newTimeItem.isReserved) {
-        await editTimeInFreeTime({ ...newTimeItem });
+        await setTimeToFreeTime({ ...newTimeItem });
       }
 
       await getDay();

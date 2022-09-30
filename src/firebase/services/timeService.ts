@@ -106,3 +106,20 @@ export const timeConverter = {
     return new TimeConverter(data);
   }
 };
+
+export class Reserve {
+  date: {
+    full: string,
+    formate: string
+  };
+  timeList: {
+    [key: string]: ITimeItem
+  };
+  constructor(date: {
+    full: string,
+    formate: string,
+  }) {
+    this.date = date;
+    this.timeList = {}
+  }
+}

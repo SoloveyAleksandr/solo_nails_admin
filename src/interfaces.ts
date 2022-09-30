@@ -76,3 +76,13 @@ export interface ICustomWindow extends Window {
   recaptchaVerifier: any;
   hellow: any;
 }
+
+export interface IReserveItem {
+  date: {
+    full: string,
+    formate: string,
+  },
+  timeList: {
+    [key: string]: ITimeItem
+  },
+}
