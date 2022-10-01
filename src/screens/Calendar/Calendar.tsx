@@ -7,10 +7,9 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import MenuBtn from '../../components/MenuBtn/MenuBtn';
 import Logo from '../../components/Logo/Logo';
 import Menu from '../../components/Menu/Menu';
-import { IDayItem, ISelectedDate } from '../../interfaces';
+import { ISelectedDate } from '../../interfaces';
 import { getMonth } from './CalendarService';
 import CalendarDay from '../../components/CalendarDay/CalendarDay';
-import DefaultBtn from '../../components/DefaultBtn/DefaultBtn';
 import useAuth from '../../firebase/controllers/userController';
 import { useToast } from '@chakra-ui/react';
 
@@ -20,7 +19,6 @@ import { NavLink } from 'react-router-dom';
 const Calendar: FC = () => {
   const { userSignOut } = useAuth();
   const toast = useToast();
-  const { getCurrentUser } = useAuth();
 
   const reduxDispatch = useAppDispatch();
   const appState = useAppSelector(state => state.AppStore);
@@ -72,6 +70,13 @@ const Calendar: FC = () => {
             <NavLink
               to={'/reserved'}>
               подтвержднные записи
+            </NavLink>
+          </li>
+          <li
+            className={styles.menuItem}>
+            <NavLink
+              to={'/free-time'}>
+              свободные записи
             </NavLink>
           </li>
           <li
