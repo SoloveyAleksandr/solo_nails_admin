@@ -8,13 +8,20 @@ import ScreenTitle from '../../components/ScreenTitle/ScreenTitle';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import {
   IconButton,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverHeader,
+  PopoverTrigger,
   useToast,
 } from '@chakra-ui/react';
 import DefaultBtn from '../../components/DefaultBtn/DefaultBtn';
 import ModalConteiner from '../../components/ModalContainer/ModalContainer';
 import FormInput from '../../components/FormInput/FormInput';
-import { CheckIcon, CloseIcon, PhoneIcon } from '@chakra-ui/icons';
-import { setLoading } from '../../store';
+import { CheckIcon, CloseIcon, ExternalLinkIcon, InfoIcon, PhoneIcon } from '@chakra-ui/icons';
+import { setLoading, setSelectedDate } from '../../store';
 import useAuth from '../../firebase/controllers/userController';
 import { IReserveItem, ITimeItem } from '../../interfaces';
 import useTime from '../../firebase/controllers/timeController';
@@ -27,12 +34,19 @@ import {
 } from '@chakra-ui/react';
 import styles from './ReservedScreen.module.scss';
 import moment from 'moment';
+import { NavLink } from 'react-router-dom';
+import { Time } from '../../firebase/services/timeService';
 
 const ReservedScreen: FC = () => {
   const appState = useAppSelector(store => store.AppStore);
   const reduxDispatch = useAppDispatch();
   const toast = useToast();
-  const { getAllReserves } = useTime();
+  const {
+    getAllReserves,
+    setTimeToDay,
+    setTimeToFreeTime,
+    removeTimeFromReserves
+  } = useTime();
 
   const [reservedList, setReservedList] = useState<IReserveItem[]>([]);
   const [userModal, setUserModal] = useState(false);
@@ -57,13 +71,15 @@ const ReservedScreen: FC = () => {
     }
   });
 
+  const [cancelModal, setCancelModal] = useState(false);
+
   useEffect(() => {
     (async () => {
-      await setReserves();
+      await getReserves();
     })();
   }, []);
 
-  async function setReserves() {
+  async function getReserves() {
     try {
       reduxDispatch(setLoading(true));
       const data = await getAllReserves();
@@ -82,8 +98,32 @@ const ReservedScreen: FC = () => {
   const openUserInfo = (item: ITimeItem) => {
     setTimeItem(item);
     setUserModal(true);
-  }
+  };
 
+  const openCancelModal = (item: ITimeItem) => {
+    setTimeItem(item);
+    setCancelModal(true);
+  };
+
+  const cancelReserve = async () => {
+    try {
+      reduxDispatch(setLoading(true));
+      setCancelModal(false);
+      const newTimeItem = new Time({
+        id: timeItem.id,
+        date: timeItem.date,
+        time: timeItem.time,
+      });
+      await setTimeToDay({ ...newTimeItem });
+      await setTimeToFreeTime({ ...newTimeItem });
+      await removeTimeFromReserves({ ...timeItem });
+      await getReserves();
+    } catch (e) {
+      console.log(e);
+    } finally {
+      reduxDispatch(setLoading(false));
+    }
+  };
 
   return (
     <div className={styles.reserved}>
@@ -109,7 +149,16 @@ const ReservedScreen: FC = () => {
               className={styles.daysItem} >
               <AccordionButton className={styles.daysItemHeader}>
                 <h6 className={styles.daysItemTitle}>{day.date.formate}</h6>
-                <AccordionIcon />
+                <div className={styles.daysBtns}>
+                  <NavLink
+                    className={styles.daysLink}
+                    onClick={() => reduxDispatch(setSelectedDate(day.date))}
+                    to={'/day'}
+                  >
+                    <ExternalLinkIcon color={'#fff'} fontSize={'20px'} />
+                  </NavLink>
+                  <AccordionIcon />
+                </div>
               </AccordionButton>
               <AccordionPanel
                 p={'10px'}
@@ -117,8 +166,10 @@ const ReservedScreen: FC = () => {
                 className={styles.timeList} >
                 {
                   Object.values(day.timeList).sort((a, b) => Number(a.date.full) - Number(b.date.full)).map(item => (
-                    <li className={styles.timeItem}>
-                      <InfoContainer key={item.id}>
+                    <li
+                      key={item.id}
+                      className={styles.timeItem}>
+                      <InfoContainer>
                         <span className={styles.timeItemTitle}>{item.time}</span>
                         <div className={styles.btnWrapper}>
                           <IconButton
@@ -137,7 +188,7 @@ const ReservedScreen: FC = () => {
                             }
                           />
                           <IconButton
-                            onClick={() => openUserInfo(item)}
+                            onClick={() => console.log('finish', item.date.formate, item.time)}
                             className={styles.btn}
                             variant='outline'
                             colorScheme='whiteAlpha'
@@ -147,7 +198,7 @@ const ReservedScreen: FC = () => {
                             icon={<CheckIcon />}
                           />
                           <IconButton
-                            onClick={() => openUserInfo(item)}
+                            onClick={() => openCancelModal(item)}
                             className={styles.btn}
                             variant='outline'
                             colorScheme='whiteAlpha'
@@ -226,6 +277,81 @@ const ReservedScreen: FC = () => {
               value='закрыть'
               dark={true}
               handleClick={() => setUserModal(false)} />
+          </div>
+        </div>
+      </ModalConteiner>
+
+      <ModalConteiner
+        isOpen={cancelModal}
+        onClose={() => setCancelModal(false)}>
+        <div className={styles.cancelWrapper}>
+          {
+            timeItem.client.uid &&
+            <div className={styles.cancelBtn}>
+              <div className={styles.cancelTitle}>
+                <span>отменить с пометкой</span>
+                <Popover placement='auto-start'>
+                  <PopoverTrigger>
+                    <button
+                      type="button">
+                      <InfoIcon />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent>
+                    <PopoverArrow />
+                    <PopoverCloseButton />
+                    <PopoverBody
+                      className={styles.popover}>
+                      <p className={styles.cancelBody}>
+                        Запись удалится, а пометка о отмененной записи будет занесена в историю клиента
+                      </p>
+                    </PopoverBody>
+                  </PopoverContent>
+                </Popover>
+              </div>
+              <DefaultBtn
+                handleClick={() => setCancelModal(false)}
+                dark={true}
+                type='button'
+                value='отменить' />
+            </div>
+          }
+          <div className={styles.cancelBtn}>
+            <div className={styles.cancelTitle}>
+              <span>отменить без пометки</span>
+              <Popover
+                placement='auto-start' >
+                <PopoverTrigger>
+                  <button
+                    type="button"
+                    className={styles.infoBtn}>
+                    <InfoIcon />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent>
+                  <PopoverArrow />
+                  <PopoverCloseButton />
+                  <PopoverBody
+                    className={styles.popover} >
+                    <p className={styles.cancelBody}>
+                      Запись вернется в статус свободной, а пометка о отмененной записи не будет занесена в историю клиента
+                    </p>
+                  </PopoverBody>
+                </PopoverContent>
+              </Popover>
+            </div>
+            <DefaultBtn
+              handleClick={cancelReserve}
+              dark={true}
+              type='button'
+              value='отменить' />
+          </div>
+          <div className={styles.cancelClose}>
+            <DefaultBtn
+              handleClick={() => setCancelModal(false)}
+              dark={true}
+              type='button'
+              value='закрыть' />
           </div>
         </div>
       </ModalConteiner>

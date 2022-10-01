@@ -213,13 +213,21 @@ const DayScreen: FC = () => {
         time: time,
         date: timeItem.date,
         isReserved: isOffline,
-        isOffline: {
-          status: isOffline,
-          name: name,
-          instagram: inst,
-          phoneNumber: phoneNumber,
-          comment: comment,
-        }
+        isOffline: isOffline ?
+          {
+            status: isOffline,
+            name: name,
+            instagram: inst,
+            phoneNumber: phoneNumber,
+            comment: comment,
+          } :
+          {
+            status: isOffline,
+            name: '',
+            instagram: '',
+            phoneNumber: '',
+            comment: '',
+          }
       });
 
       reduxDispatch(setLoading(true));

@@ -1,5 +1,5 @@
-import React, { FC, useState } from "react";
-import { Input, InputGroup, InputLeftAddon, IconButton } from '@chakra-ui/react';
+import React, { FC } from "react";
+import { Input, InputGroup, InputLeftAddon } from '@chakra-ui/react';
 import { InfoIcon } from "@chakra-ui/icons";
 import {
   Popover,
@@ -7,15 +7,11 @@ import {
   PopoverContent,
   PopoverHeader,
   PopoverBody,
-  PopoverFooter,
   PopoverArrow,
   PopoverCloseButton,
-  PopoverAnchor,
 } from '@chakra-ui/react'
 
 import styles from './FormInput.module.scss';
-import DefaultBtn from "../DefaultBtn/DefaultBtn";
-import Container from "../Container/Container";
 
 interface IFormInput {
   title: string;

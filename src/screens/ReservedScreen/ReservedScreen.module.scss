@@ -19,6 +19,15 @@
       font-weight: 700;
     }
   }
+
+  &Btns {
+    display: flex;
+    align-items: center;
+  }
+
+  &Link {
+    margin-right: 30px;
+  }
 }
 
 .time {
@@ -72,4 +81,36 @@
     font-weight: 700;
     margin-bottom: 15px;
   }
+}
+
+.cancel {
+  &Body {
+    font-weight: 600;
+    text-transform: none;
+  }
+
+  &Btn {
+    margin-bottom: 15px;
+  }
+
+  &Title {
+    width: 100%;
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 5px;
+  }
+
+  &Close {
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+
+.popover {
+  box-shadow: 0px 0px 10px $black50;
+  padding-top: 25px;
 }
