@@ -5,6 +5,7 @@ import {
 } from "react-router-dom";
 import Calendar from "./screens/Calendar/Calendar";
 import DayScreen from "./screens/DayScreen/DayScreen";
+import FreeTime from "./screens/FreeTime/FreeTime";
 import Login from "./screens/Login/Login";
 import MyAccount from "./screens/MyAccount/MyAccount";
 import ReservedScreen from "./screens/ReservedScreen/ReservedScreen";
@@ -19,6 +20,7 @@ function AppRouter() {
         <Route path="day" element={<DayScreen />} />
         <Route path="my-account" element={<MyAccount />} />
         <Route path="reserved" element={<ReservedScreen />} />
+        <Route path="free-time" element={<FreeTime />} />
         <Route path="calendar" element={<Calendar />} />
         <Route path="/*" element={<Navigate to={'/calendar'} />}></Route>
       </Routes>

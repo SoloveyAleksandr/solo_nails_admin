@@ -73,48 +73,7 @@ export default function useTime() {
     }
   };
 
-  // EDIT TIME FUNCS
-  // const editTimeInDay = async (time: ITimeItem) => {
-  //   try {
-  //     const id = time.id;
-  //     const date = time.date.full;
-  //     const timeRef = doc(dayRef, date);
-  //     await updateDoc(timeRef, {
-  //       ['timeList.' + [id]]: time
-  //     });
-  //   } catch (e) {
-  //     errorHandler(e);
-  //   }
-  // };
-
-  // const editTimeInFreeTime = async (time: ITimeItem) => {
-  //   try {
-  //     const id = time.id;
-  //     const date = time.date.full;
-  //     const timeRef = doc(freeTimeRef, date);
-  //     await updateDoc(timeRef, {
-  //       ['timeList.' + [id]]: time
-  //     });
-  //   } catch (e) {
-  //     errorHandler(e);
-  //   }
-  // };
-
-  // const editTimeInReserves = async (time: ITimeItem) => {
-  //   try {
-  //     const id = time.id;
-  //     const date = time.date.full;
-  //     const timeRef = doc(reservesRef, date);
-  //     await updateDoc(timeRef, {
-  //       ['timeList.' + [id]]: time
-  //     });
-  //   } catch (e) {
-  //     errorHandler(e);
-  //   }
-  // };
-
   // REMOVE TIME FUNCS
-
   const removeTimeFromDay = async (time: ITimeItem) => {
     try {
       const date = time.date.full;
@@ -164,7 +123,20 @@ export default function useTime() {
     } catch (e) {
       errorHandler(e);
     }
-  }
+  };
+
+  const getFreeTime = async () => {
+    try {
+      const data: IReserveItem[] = [];
+      const snap = await getDocs(collection(DB, 'freeTime'));
+      snap.forEach(el => {
+        data.push(el.data() as IReserveItem);
+      });
+      return data;
+    } catch (e) {
+      errorHandler(e);
+    }
+  };
 
   // const bookATime = async (
   //   timeItem: ITimeItem,
@@ -194,5 +166,6 @@ export default function useTime() {
     removeTimeFromReserves,
 
     getAllReserves,
+    getFreeTime,
   }
 }
