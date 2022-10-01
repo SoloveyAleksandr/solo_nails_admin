@@ -3,6 +3,7 @@ import { setSelectedDay } from "../../store";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { DB } from "../firebase";
 import { Day, dayConverter, sortTimesList } from "../services/dayService";
+import { Reserve } from "../services/timeService";
 
 export default function useDay() {
   const appState = useAppSelector(s => s.AppStore);
@@ -32,8 +33,8 @@ export default function useDay() {
   }) => {
     try {
       await setDoc(doc(dayRef, date.full), { ...new Day(date) });
-      await setDoc(doc(freeTimeRef, date.full), {});
-      await setDoc(doc(reservesRef, date.full), {});
+      await setDoc(doc(freeTimeRef, date.full), { ...new Reserve(date) });
+      await setDoc(doc(reservesRef, date.full), { ...new Reserve(date) });
     } catch (e) {
       errorHandler(e);
     }

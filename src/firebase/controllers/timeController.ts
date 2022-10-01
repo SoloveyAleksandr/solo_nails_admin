@@ -1,5 +1,5 @@
-import { collection, doc, updateDoc, deleteField, setDoc, deleteDoc, getDocs, query, where, addDoc } from "firebase/firestore";
-import { ITimeItem } from "../../interfaces";
+import { collection, doc, updateDoc, deleteField, setDoc, deleteDoc, getDocs, query, where, addDoc, onSnapshot } from "firebase/firestore";
+import { IReserveItem, ITimeItem } from "../../interfaces";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { DB } from "../firebase";
 import useReserve from "./reserveController";
@@ -34,7 +34,7 @@ export default function useTime() {
   // ['timeList.' + [time.id]]: deleteField()
 
   // ADD TIME FUNCS
-  const addTimeToDay = async (time: ITimeItem) => {
+  const setTimeToDay = async (time: ITimeItem) => {
     try {
       const id = time.id;
       const date = time.date.full;
@@ -47,26 +47,26 @@ export default function useTime() {
     }
   };
 
-  const addTimeToFreeTime = async (time: ITimeItem) => {
+  const setTimeToFreeTime = async (time: ITimeItem) => {
     try {
       const id = time.id;
       const date = time.date.full;
       const timeRef = doc(freeTimeRef, date);
       await updateDoc(timeRef, {
-        [id]: time
+        ['timeList.' + [id]]: time
       })
     } catch (e) {
       errorHandler(e);
     }
   };
 
-  const addTimeToReserves = async (time: ITimeItem) => {
+  const setTimeToReserves = async (time: ITimeItem) => {
     try {
       const id = time.id;
       const date = time.date.full;
       const timeRef = doc(reservesRef, date);
       await updateDoc(timeRef, {
-        [id]: time
+        ['timeList.' + [id]]: time
       })
     } catch (e) {
       errorHandler(e);
@@ -74,46 +74,47 @@ export default function useTime() {
   };
 
   // EDIT TIME FUNCS
-  const editTimeInDay = async (time: ITimeItem) => {
-    try {
-      const id = time.id;
-      const date = time.date.full;
-      const timeRef = doc(dayRef, date);
-      await updateDoc(timeRef, {
-        ['timeList.' + [id]]: time
-      });
-    } catch (e) {
-      errorHandler(e);
-    }
-  };
+  // const editTimeInDay = async (time: ITimeItem) => {
+  //   try {
+  //     const id = time.id;
+  //     const date = time.date.full;
+  //     const timeRef = doc(dayRef, date);
+  //     await updateDoc(timeRef, {
+  //       ['timeList.' + [id]]: time
+  //     });
+  //   } catch (e) {
+  //     errorHandler(e);
+  //   }
+  // };
 
-  const editTimeInFreeTime = async (time: ITimeItem) => {
-    try {
-      const id = time.id;
-      const date = time.date.full;
-      const timeRef = doc(freeTimeRef, date);
-      await updateDoc(timeRef, {
-        [id]: time
-      });
-    } catch (e) {
-      errorHandler(e);
-    }
-  };
+  // const editTimeInFreeTime = async (time: ITimeItem) => {
+  //   try {
+  //     const id = time.id;
+  //     const date = time.date.full;
+  //     const timeRef = doc(freeTimeRef, date);
+  //     await updateDoc(timeRef, {
+  //       ['timeList.' + [id]]: time
+  //     });
+  //   } catch (e) {
+  //     errorHandler(e);
+  //   }
+  // };
 
-  const editTimeInReserves = async (time: ITimeItem) => {
-    try {
-      const id = time.id;
-      const date = time.date.full;
-      const timeRef = doc(reservesRef, date);
-      await updateDoc(timeRef, {
-        [id]: time
-      });
-    } catch (e) {
-      errorHandler(e);
-    }
-  };
+  // const editTimeInReserves = async (time: ITimeItem) => {
+  //   try {
+  //     const id = time.id;
+  //     const date = time.date.full;
+  //     const timeRef = doc(reservesRef, date);
+  //     await updateDoc(timeRef, {
+  //       ['timeList.' + [id]]: time
+  //     });
+  //   } catch (e) {
+  //     errorHandler(e);
+  //   }
+  // };
 
   // REMOVE TIME FUNCS
+
   const removeTimeFromDay = async (time: ITimeItem) => {
     try {
       const date = time.date.full;
@@ -132,7 +133,7 @@ export default function useTime() {
       const date = time.date.full;
       const timeRef = doc(freeTimeRef, date);
       await updateDoc(timeRef, {
-        [id]: deleteField()
+        ['timeList.' + [time.id]]: deleteField()
       });
     } catch (e) {
       errorHandler(e);
@@ -145,12 +146,25 @@ export default function useTime() {
       const date = time.date.full;
       const timeRef = doc(reservesRef, date);
       await updateDoc(timeRef, {
-        [id]: deleteField()
+        ['timeList.' + [time.id]]: deleteField()
       });
     } catch (e) {
       errorHandler(e);
     }
   };
+
+  const getAllReserves = async () => {
+    try {
+      const data: IReserveItem[] = [];
+      const snap = await getDocs(collection(DB, 'reserves'));
+      snap.forEach(el => {
+        data.push(el.data() as IReserveItem);
+      });
+      return data;
+    } catch (e) {
+      errorHandler(e);
+    }
+  }
 
   // const bookATime = async (
   //   timeItem: ITimeItem,
@@ -171,16 +185,14 @@ export default function useTime() {
   // }
 
   return {
-    addTimeToDay,
-    addTimeToFreeTime,
-    addTimeToReserves,
+    setTimeToDay,
+    setTimeToFreeTime,
+    setTimeToReserves,
 
     removeTimeFromDay,
     removeTimeFromFreeTime,
     removeTimeFromReserves,
 
-    editTimeInDay,
-    editTimeInFreeTime,
-    editTimeInReserves,
+    getAllReserves,
   }
 }

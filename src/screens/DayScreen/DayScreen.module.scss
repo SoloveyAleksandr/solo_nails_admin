@@ -8,6 +8,7 @@
   border-radius: 50%;
   width: 60px;
   height: 60px;
+
   &Wrapper {
     position: fixed;
     bottom: 25px;
@@ -31,16 +32,19 @@
 
   &List {
     list-style: none;
-    &Item + &Item {
+
+    &Item+&Item {
       margin-top: 15px;
     }
   }
+
   &ItemLabel {
     color: $black;
     font-size: 12px;
     font-weight: 700;
     text-transform: uppercase;
   }
+
   &BtnWrapper {
     display: flex;
     align-items: center;
@@ -62,6 +66,7 @@
   transition: 0.5s;
   margin-top: 0;
   max-height: 0;
+
   &.open {
     max-height: 500px;
     height: fit-content;
@@ -98,12 +103,45 @@
   }
 }
 
-.btnList {
-  list-style: none;
-  display: flex;
-  align-items: center;
+.btn {
+  &List {
+    list-style: none;
+    display: flex;
+    align-items: center;
 
-  &Item + &Item {
-    margin-left: 20px;
+    &Item+&Item {
+      margin-left: 20px;
+    }
+  }
+
+  &Wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+}
+
+.info {
+  &List {
+    list-style: none;
+  }
+
+  &Item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 15px;
+  }
+
+  &Title {
+    text-transform: uppercase;
+  }
+
+  &Comment {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 15px;
   }
 }

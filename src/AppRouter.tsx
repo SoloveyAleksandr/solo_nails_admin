@@ -7,6 +7,7 @@ import Calendar from "./screens/Calendar/Calendar";
 import DayScreen from "./screens/DayScreen/DayScreen";
 import Login from "./screens/Login/Login";
 import MyAccount from "./screens/MyAccount/MyAccount";
+import ReservedScreen from "./screens/ReservedScreen/ReservedScreen";
 import { useAppSelector } from "./store/hooks";
 
 function AppRouter() {
@@ -17,6 +18,7 @@ function AppRouter() {
       <Routes>
         <Route path="day" element={<DayScreen />} />
         <Route path="my-account" element={<MyAccount />} />
+        <Route path="reserved" element={<ReservedScreen />} />
         <Route path="calendar" element={<Calendar />} />
         <Route path="/*" element={<Navigate to={'/calendar'} />}></Route>
       </Routes>
