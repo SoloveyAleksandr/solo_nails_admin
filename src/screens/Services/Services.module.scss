@@ -1,0 +1,68 @@
+@import "../../var";
+
+.plusBtnWrapper {
+  position: fixed;
+  right: 25px;
+  bottom: 25px;
+}
+
+.price {
+  &List {
+    padding-top: 15px;
+    list-style: none;
+  }
+
+  &Item {
+    border: 1px solid $white50;
+    border-radius: 8px;
+    color: $white;
+    position: relative;
+  }
+
+  &Title {
+    font-size: 18px;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 0 10px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid $white50;
+  }
+
+  &Count {
+    font-family: 'Teko';
+    font-size: 30px;
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 0 10px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    border-top: 1px solid $white50;
+  }
+
+  &Value {
+    font-size: 10px;
+    transform: translateY(5px);
+  }
+}
+
+.service {
+  &List {
+    list-style: decimal;
+    padding: 10px 10px 10px 30px;
+  }
+
+  &Item {
+    position: relative;
+    font-size: 18px;
+  }
+}
+
+.editBtn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}

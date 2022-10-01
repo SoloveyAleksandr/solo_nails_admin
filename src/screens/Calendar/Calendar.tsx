@@ -15,6 +15,7 @@ import { useToast } from '@chakra-ui/react';
 
 import styles from './Calendar.module.scss';
 import { NavLink } from 'react-router-dom';
+import { useService } from '../../firebase/controllers/serviceController';
 
 const Calendar: FC = () => {
   const { userSignOut } = useAuth();
@@ -77,6 +78,13 @@ const Calendar: FC = () => {
             <NavLink
               to={'/free-time'}>
               свободные записи
+            </NavLink>
+          </li>
+          <li
+            className={styles.menuItem}>
+            <NavLink
+              to={'/services'}>
+              услуги и цены
             </NavLink>
           </li>
           <li
