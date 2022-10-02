@@ -128,8 +128,7 @@ const ReservedScreen: FC = () => {
   return (
     <div className={styles.reserved}>
       <Header>
-        <BackBtn
-          to="/calendar" />
+        <BackBtn />
         <Logo />
       </Header>
 

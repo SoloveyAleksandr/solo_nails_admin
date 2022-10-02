@@ -86,3 +86,13 @@ export interface IReserveItem {
     [key: string]: ITimeItem
   },
 }
+
+export interface IService {
+  id: string,
+  title: string,
+  price: string,
+  servicesList: {
+    id: string,
+    value: string,
+  }[],
+}
