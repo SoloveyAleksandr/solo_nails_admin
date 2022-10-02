@@ -8,13 +8,6 @@ import ScreenTitle from '../../components/ScreenTitle/ScreenTitle';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import {
   IconButton,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
   useToast,
 } from '@chakra-ui/react';
 
@@ -67,8 +60,7 @@ const MyAccount: FC = () => {
   return (
     <div className={styles.myAccount}>
       <Header>
-        <BackBtn
-          to="/calendar" />
+        <BackBtn />
         <Logo />
       </Header>
 

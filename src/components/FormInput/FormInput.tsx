@@ -49,8 +49,11 @@ const FormInput: FC<IFormInput> = ({
             <PopoverContent>
               <PopoverArrow />
               <PopoverCloseButton />
-              <PopoverHeader></PopoverHeader>
-              <PopoverBody>{info}</PopoverBody>
+              <PopoverBody
+                p={'30px 5px 5px 5px'}
+                boxShadow={'0 0 5px #000'}>
+                {info}
+              </PopoverBody>
             </PopoverContent>
           </Popover>
         }

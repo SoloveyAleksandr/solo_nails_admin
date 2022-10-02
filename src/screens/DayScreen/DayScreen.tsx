@@ -308,8 +308,7 @@ const DayScreen: FC = () => {
   return (
     <div className={styles.day}>
       <Header>
-        <BackBtn
-          to="/calendar" />
+        <BackBtn />
         <Logo />
       </Header>
 

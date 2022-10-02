@@ -91,5 +91,8 @@ export interface IService {
   id: string,
   title: string,
   price: string,
-  servicesList: string[];
+  servicesList: {
+    id: string,
+    value: string,
+  }[],
 }

@@ -1,19 +1,16 @@
-import React, { FC } from "react";
-import { NavLink } from "react-router-dom";
+import { FC } from "react";
+import { useNavigate } from 'react-router-dom';
 
 import styles from './BackBtn.module.scss';
 
-interface IBackBtn {
-  to: string
-};
-
-const BackBtn: FC<IBackBtn> = ({
-  to,
-}) => {
+const BackBtn: FC = () => {
+  const navigate = useNavigate();
   return (
-    <NavLink to={to} className={styles.buttonWrapper}>
+    <button
+      className={styles.buttonWrapper}
+      onClick={() => navigate(-1)}>
       <span className={styles.button}></span>
-    </NavLink>
+    </button>
   );
 };
 

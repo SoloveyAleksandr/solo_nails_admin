@@ -5,7 +5,7 @@ import { DB } from "../firebase";
 export const useService = () => {
   const priceRef = doc(collection(DB, 'other'), 'price');
 
-  const addService = async (item: IService) => {
+  const setService = async (item: IService) => {
     await updateDoc(priceRef, {
       [item.id]: item,
     })
@@ -26,7 +26,7 @@ export const useService = () => {
   }
 
   return {
-    addService,
+    setService,
     removeService,
     getServices,
   }

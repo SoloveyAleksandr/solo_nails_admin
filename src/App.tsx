@@ -9,12 +9,15 @@ import { onAuthStateChanged } from "firebase/auth";
 import { useToast } from '@chakra-ui/react';
 import useAuth from "./firebase/controllers/userController";
 import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 function App() {
   const reduxDispatch = useAppDispatch();
   const appState = useAppSelector(state => state.AppStore);
   const toast = useToast();
   const { getCurrentUser } = useAuth();
+
+  const location = useLocation();
 
   onAuthStateChanged(authentification, async (user) => {
     try {
@@ -75,6 +78,11 @@ function App() {
       }
     }
   }, [appState.currentUserInfo.uid]);
+
+  // useEffect(() => {
+  //отключение слушателя сервера
+  // console.log(location.pathname);
+  // }, [location])
 
   return (
     <ChakraProvider>
