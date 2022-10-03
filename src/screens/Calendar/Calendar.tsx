@@ -69,6 +69,13 @@ const Calendar: FC = () => {
           <li
             className={styles.menuItem}>
             <NavLink
+              to={'/waiting'}>
+              ожидающие подтверждения
+            </NavLink>
+          </li>
+          <li
+            className={styles.menuItem}>
+            <NavLink
               to={'/reserved'}>
               подтвержднные записи
             </NavLink>
