@@ -14,6 +14,7 @@ export default function useTime() {
   const dayRef = collection(DB, 'day');
   const freeTimeRef = collection(DB, 'freeTime');
   const reservesRef = collection(DB, 'reserves');
+  const waitingRef = collection(DB, 'reserves');
   const userRef = collection(DB, "user");
 
   const errorHandler = (error: any) => {
@@ -34,6 +35,7 @@ export default function useTime() {
   // ['timeList.' + [time.id]]: deleteField()
 
   // ADD TIME FUNCS
+  // 
   const setTimeToDay = async (time: ITimeItem) => {
     try {
       const id = time.id;
@@ -73,7 +75,21 @@ export default function useTime() {
     }
   };
 
+  const setTimeToWaiting = async (time: ITimeItem) => {
+    try {
+      const id = time.id;
+      const date = time.date.full;
+      const timeRef = doc(waitingRef, date);
+      await updateDoc(timeRef, {
+        ['waiting.' + [id]]: time
+      })
+    } catch (e) {
+      errorHandler(e);
+    }
+  };
+
   // REMOVE TIME FUNCS
+  // 
   const removeTimeFromDay = async (time: ITimeItem) => {
     try {
       const date = time.date.full;
@@ -112,6 +128,20 @@ export default function useTime() {
     }
   };
 
+  const removeTimeFromWaiting = async (time: ITimeItem) => {
+    try {
+      const date = time.date.full;
+      const timeRef = doc(waitingRef, date);
+      await updateDoc(timeRef, {
+        ['timeList.' + [time.id]]: deleteField()
+      });
+    } catch (e) {
+      errorHandler(e);
+    }
+  };
+
+  //
+  //
   const getAllReserves = async () => {
     try {
       const data: IReserveItem[] = [];
@@ -125,6 +155,9 @@ export default function useTime() {
     }
   };
 
+
+  //
+  //
   const getFreeTime = async () => {
     try {
       const data: IReserveItem[] = [];
@@ -138,34 +171,30 @@ export default function useTime() {
     }
   };
 
-  // const bookATime = async (
-  //   timeItem: ITimeItem,
-  //   comment: string,
-  // ) => {
-  //   try {
-  //     const timeRef = doc(dayRef, timeItem.date.full);
-  //     await updateDoc(timeRef, {
-  //       [`timeList.${timeItem.id}.client.uid`]: appState.currentUser.uid,
-  //       [`timeList.${timeItem.id}.client.comment`]: comment,
-  //       [`timeList.${timeItem.id}.isReserved`]: true,
-  //     });
-  //     await setReserve(timeItem.id, comment);
-  //     await addHistoryItem(appState.currentUser.uid, timeItem);
-  //   } catch (e) {
-  //     errorHandler(e);
-  //   }
-  // }
+  const bookATime = async (time: ITimeItem) => {
+    try {
+      await setTimeToDay(time);
+      await setTimeToWaiting(time);
+      await removeTimeFromFreeTime(time);
+    } catch (e) {
+      errorHandler(e);
+    }
+  }
 
   return {
     setTimeToDay,
     setTimeToFreeTime,
     setTimeToReserves,
+    setTimeToWaiting,
 
     removeTimeFromDay,
     removeTimeFromFreeTime,
     removeTimeFromReserves,
+    removeTimeFromWaiting,
 
     getAllReserves,
     getFreeTime,
+
+    bookATime,
   }
 }
