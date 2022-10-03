@@ -49,7 +49,7 @@ export class UserConverter {
     this.history = user.history;
     this.privateKey = user.privateKey;
     this.inviteKey = user.description;
-    this.description = user.inviteKey;
+    this.description = user.description;
   }
 }
 
@@ -64,7 +64,7 @@ export const userConverter = {
       history: user.history,
       privateKey: user.privateKey,
       inviteKey: user.description,
-      description: user.inviteKey,
+      description: user.description,
     };
   },
   fromFirestore: (snapshot: any, options: object) => {

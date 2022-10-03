@@ -92,6 +92,16 @@ export default function useAuth() {
         }
     };
 
+    const setDescription = async (uid: string, value: string) => {
+        try {
+            await updateDoc(doc(userRef, uid), {
+                ['description']: value,
+            });
+        } catch (e) {
+            errorHandler(e);
+        }
+    };
+
     const setInst = async (uid: string, value: string) => {
         try {
             await updateDoc(doc(userRef, uid), {
@@ -148,5 +158,6 @@ export default function useAuth() {
         userSignOut,
         setName,
         setInst,
+        setDescription,
     }
 }

@@ -11,7 +11,7 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { AddIcon, CheckIcon, CloseIcon, PhoneIcon } from '@chakra-ui/icons';
-import { setLoading } from "../../store";
+import { setLoading, setSelectedUserUID } from "../../store";
 import useDay from "../../firebase/controllers/dayController";
 import ModalConteiner from "../../components/ModalContainer/ModalContainer";
 import DefaultBtn from "../../components/DefaultBtn/DefaultBtn";
@@ -333,9 +333,9 @@ const DayScreen: FC = () => {
                   {item.client.uid &&
                     <li className={styles.btnListItem}>
                       <NavLink
+                        onClick={() => reduxDispatch(setSelectedUserUID(item.client.uid))}
                         to={'/user'}>
                         <IconButton
-                          onClick={() => console.log('установить данные пользователя')}
                           variant='outline'
                           colorScheme='whiteAlpha'
                           aria-label='btn'

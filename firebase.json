@@ -16,6 +16,10 @@
         "destination": "/index.html"
       },
       {
+        "source": "/user",
+        "destination": "/index.html"
+      },
+      {
         "source": "/reserved",
         "destination": "/index.html"
       },
