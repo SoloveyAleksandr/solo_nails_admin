@@ -113,39 +113,10 @@ export default function useAuth() {
     };
 
 
-    const addHistoryItem = async (
-        uid: string,
-        timeItem: ITimeItem,
-    ) => {
+    const setUserHistory = async (historyItem: IHistoryItem) => {
         try {
-            const newHistoryItem = new History(timeItem);
-            await updateDoc(doc(userRef, uid), {
-                ['history.' + [newHistoryItem.id]]: { ...newHistoryItem }
-            });
-        } catch (e) {
-            errorHandler(e);
-        }
-    };
-
-    const removeHistoryItem = async (uid: string, item: IHistoryItem) => {
-        try {
-            const timeRef = doc(dayRef, item.date.full);
-            await updateDoc(doc(userRef, uid), {
-                ['history.' + [item.id]]: deleteField(),
-            });
-            await updateDoc(timeRef, {
-                ['timeList.' + [item.id]]: deleteField()
-            });
-            await deleteReserve(item.id);
-        } catch (e) {
-            errorHandler(e);
-        }
-    };
-
-    const setHictoryStatus = async (uid: string, itemID: string, status: 'canceled' | 'success' | 'await') => {
-        try {
-            await updateDoc(doc(userRef, uid), {
-                ['history.' + [itemID] + '.status']: status
+            await updateDoc(doc(userRef, historyItem.time.client.uid), {
+                ['history.' + [historyItem.id]]: historyItem,
             });
         } catch (e) {
             errorHandler(e);
@@ -155,9 +126,13 @@ export default function useAuth() {
     return {
         getUserInfo,
         getCurrentUser,
+
         userSignOut,
+
         setName,
         setInst,
         setDescription,
+
+        setUserHistory,
     }
 }

@@ -1,5 +1,5 @@
 import { collection, doc, updateDoc, deleteField, setDoc, deleteDoc, getDocs, query, where, addDoc, onSnapshot } from "firebase/firestore";
-import { IReserveItem, ITimeItem } from "../../interfaces";
+import { IHistoryInfo, IReserveItem, ITimeItem } from "../../interfaces";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { DB } from "../firebase";
 import useReserve from "./reserveController";
@@ -10,11 +10,13 @@ export default function useTime() {
   const appState = useAppSelector(store => store.AppStore);
 
   const { addReserve, deleteReserve } = useReserve();
+  const { setUserHistory } = useAuth();
 
   const dayRef = collection(DB, 'day');
   const freeTimeRef = collection(DB, 'freeTime');
   const reservesRef = collection(DB, 'reserves');
-  const waitingRef = collection(DB, 'reserves');
+  const waitingRef = collection(DB, 'waiting');
+  const historyRef = collection(DB, 'history');
   const userRef = collection(DB, "user");
 
   const errorHandler = (error: any) => {
@@ -81,12 +83,25 @@ export default function useTime() {
       const date = time.date.full;
       const timeRef = doc(waitingRef, date);
       await updateDoc(timeRef, {
-        ['waiting.' + [id]]: time
+        ['timeList.' + [id]]: time
       })
     } catch (e) {
       errorHandler(e);
     }
   };
+
+  // const setTimeToHistory = async (time: ITimeItem) => {
+  //   try {
+  //     const id = time.id;
+  //     const date = time.date.full;
+  //     const timeRef = doc(historyRef);
+  //     await updateDoc(timeRef, {
+  //       ['timeList.' + [id]]: time
+  //     })
+  //   } catch (e) {
+  //     errorHandler(e);
+  //   }
+  // };
 
   // REMOVE TIME FUNCS
   // 
@@ -155,9 +170,6 @@ export default function useTime() {
     }
   };
 
-
-  //
-  //
   const getFreeTime = async () => {
     try {
       const data: IReserveItem[] = [];
@@ -171,6 +183,21 @@ export default function useTime() {
     }
   };
 
+  const getAllWaiting = async () => {
+    try {
+      const data: IReserveItem[] = [];
+      const snap = await getDocs(collection(DB, 'waiting'));
+      snap.forEach(el => {
+        data.push(el.data() as IReserveItem);
+      });
+      return data;
+    } catch (e) {
+      errorHandler(e);
+    }
+  };
+
+  //
+  //
   const bookATime = async (time: ITimeItem) => {
     try {
       await setTimeToDay(time);
@@ -179,7 +206,32 @@ export default function useTime() {
     } catch (e) {
       errorHandler(e);
     }
-  }
+  };
+
+  const confirmTime = async (time: ITimeItem) => {
+    try {
+      await setTimeToDay(time);
+      await removeTimeFromWaiting(time);
+      await setTimeToReserves(time);
+    } catch (e) {
+      errorHandler(e);
+    }
+  };
+
+  const closeTime = async (historyInfo: IHistoryInfo) => {
+    try {
+      await removeTimeFromDay(historyInfo.time);
+      await removeTimeFromReserves(historyInfo.time);
+      await setUserHistory({
+        id: historyInfo.time.id,
+        time: historyInfo.time,
+        status: 'success',
+      });
+      await addDoc(historyRef, historyInfo);
+    } catch (e) {
+      errorHandler(e);
+    }
+  };
 
   return {
     setTimeToDay,
@@ -194,7 +246,10 @@ export default function useTime() {
 
     getAllReserves,
     getFreeTime,
+    getAllWaiting,
 
     bookATime,
+    confirmTime,
+    closeTime,
   }
 }

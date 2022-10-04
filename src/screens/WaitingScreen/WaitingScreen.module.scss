@@ -9,7 +9,6 @@
     margin-top: 15px;
     border: 1px solid $white;
     border-radius: 8px;
-    color: rgba(0, 0, 0, 0.5);
 
     &Header {
       display: flex;
@@ -117,26 +116,16 @@
 }
 
 .confirm {
-  &List {
-    list-style: none;
-  }
-  &Item {
-    margin: 15px 0;
-  }
   &Title {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 14px;
+    font-size: 18px;
     font-weight: 700;
+    text-align: center;
+    margin-bottom: 25px;
     text-transform: uppercase;
-    margin-bottom: 5px;
   }
-
   &Btn {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-top: 25px;
   }
 }

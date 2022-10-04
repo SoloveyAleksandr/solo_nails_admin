@@ -12,11 +12,11 @@
         "destination": "/index.html"
       },
       {
-        "source": "/my-account",
+        "source": "/day",
         "destination": "/index.html"
       },
       {
-        "source": "/user",
+        "source": "/my-account",
         "destination": "/index.html"
       },
       {
@@ -33,10 +33,6 @@
       },
       {
         "source": "/calendar",
-        "destination": "/index.html"
-      },
-      {
-        "source": "/day",
         "destination": "/index.html"
       }
     ]

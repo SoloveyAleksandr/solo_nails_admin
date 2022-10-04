@@ -64,12 +64,21 @@ export interface IUser {
 
 export interface IHistoryItem {
   id: string,
-  time: string,
+  time: ITimeItem,
+  status: 'await' | 'success' | 'canceled',
+}
+
+export interface IHistoryInfo {
   date: {
     full: string,
-    formate: string,
+    formate: string
   },
-  status: 'await' | 'success' | 'canceled',
+  time: ITimeItem,
+  info: {
+    cost: number,
+    time: number,
+    comment: string,
+  }
 }
 
 export interface ICustomWindow extends Window {

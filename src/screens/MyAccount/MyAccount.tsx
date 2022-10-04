@@ -183,7 +183,7 @@ const MyAccount: FC = () => {
             {history.map(item => (
               <li className={styles.historyItem}>
                 <InfoContainer>
-                  <span>{item.date.formate}</span>
+                  <span>{item.time.date.formate}</span>
                   <span>{item.status}</span>
                 </InfoContainer>
               </li>

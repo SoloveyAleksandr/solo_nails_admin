@@ -11,6 +11,7 @@ import MyAccount from "./screens/MyAccount/MyAccount";
 import ReservedScreen from "./screens/ReservedScreen/ReservedScreen";
 import Services from "./screens/Services/Services";
 import UserScreen from "./screens/UserScreen/UserScreen";
+import WaitingScreen from "./screens/WaitingScreen/WaitingScreen";
 import { useAppSelector } from "./store/hooks";
 
 function AppRouter() {
@@ -24,6 +25,7 @@ function AppRouter() {
         <Route path="reserved" element={<ReservedScreen />} />
         <Route path="free-time" element={<FreeTime />} />
         <Route path="services" element={<Services />} />
+        <Route path="waiting" element={<WaitingScreen />} />
         <Route path="calendar" element={<Calendar />} />
         <Route path="user" element={<UserScreen />} />
         <Route path="/*" element={<Navigate to={'/calendar'} />}></Route>

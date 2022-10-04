@@ -42,7 +42,6 @@ const UserScreen: FC = () => {
         setUser(user);
         setHistory(Object.values(user.history));
         setComment(user.description);
-        console.log(user)
       }
     } catch (e) {
       console.log(e);
@@ -59,6 +58,7 @@ const UserScreen: FC = () => {
 
   const saveComment = async () => {
     try {
+      setCommentModal(false);
       reduxDispatch(setLoading(true));
       await setDescription(appState.selectedUserUID, comment);
       await getUser();
@@ -84,7 +84,7 @@ const UserScreen: FC = () => {
       </Header>
 
       <ScreenTitle
-        title='мой аккаунт' />
+        title='страница клиента' />
 
       <Container>
         <ul className={styles.infoList}>
@@ -152,9 +152,11 @@ const UserScreen: FC = () => {
           </span>
           <ul className={styles.historyList}>
             {history.map(item => (
-              <li className={styles.historyItem}>
+              <li
+                key={item.id}
+                className={styles.historyItem}>
                 <InfoContainer>
-                  <span>{item.date.formate}</span>
+                  <span>{item.time.date.formate}</span>
                   <span>{item.status}</span>
                 </InfoContainer>
               </li>
