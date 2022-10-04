@@ -91,6 +91,13 @@ const Calendar: FC = () => {
           <li
             className={styles.menuItem}>
             <NavLink
+              to={'/all-users'}>
+              все пользователи
+            </NavLink>
+          </li>
+          <li
+            className={styles.menuItem}>
+            <NavLink
               to={'/services'}>
               услуги и цены
             </NavLink>

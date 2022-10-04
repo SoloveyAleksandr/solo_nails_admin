@@ -3,6 +3,7 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+import AllUsers from "./screens/AllUsers/AllUsers";
 import Calendar from "./screens/Calendar/Calendar";
 import DayScreen from "./screens/DayScreen/DayScreen";
 import FreeTime from "./screens/FreeTime/FreeTime";
@@ -28,6 +29,7 @@ function AppRouter() {
         <Route path="waiting" element={<WaitingScreen />} />
         <Route path="calendar" element={<Calendar />} />
         <Route path="user" element={<UserScreen />} />
+        <Route path="all-users" element={<AllUsers />} />
         <Route path="/*" element={<Navigate to={'/calendar'} />}></Route>
       </Routes>
     )
