@@ -1,6 +1,6 @@
 export interface IDayItem {
   date: {
-    full: string,
+    full: number,
     formate: string,
   }
   day: string,
@@ -14,7 +14,7 @@ export interface IDayItem {
 
 export interface IDay {
   date: {
-    full: string,
+    full: number,
     formate: string
   }
   timeList: {
@@ -27,7 +27,7 @@ export interface ITimeItem {
   isReserved: boolean,
   time: string,
   date: {
-    full: string,
+    full: number,
     formate: string
   },
   client: {
@@ -44,7 +44,7 @@ export interface ITimeItem {
 }
 
 export interface ISelectedDate {
-  full: string,
+  full: number,
   formate: string,
 }
 
@@ -70,7 +70,7 @@ export interface IHistoryItem {
 
 export interface IHistoryInfo {
   date: {
-    full: string,
+    full: number,
     formate: string
   },
   time: ITimeItem,
@@ -88,7 +88,7 @@ export interface ICustomWindow extends Window {
 
 export interface IReserveItem {
   date: {
-    full: string,
+    full: number,
     formate: string,
   },
   timeList: {

@@ -1,44 +1,42 @@
 @import "../../var";
 
-.search {
-  &Wrapper {
-    margin: 15px 0 15px 0;
-  }
+.range {
+  margin: 15px 0;
+  padding-bottom: 15px;
+  border-bottom: 1px solid $white50;
   &Title {
     font-size: 18px;
     font-weight: 700;
+    text-transform: uppercase;
     color: $white;
     display: block;
     margin-bottom: 5px;
   }
 
-  &Input {
-    color: $white80;
-    &::placeholder {
-      color: $white50;
+  &Date {
+    &Wrapper {
+      display: flex;
+      align-items: center;
+    }
+    &Item + &Item {
+      margin-left: 25px;
+    }
+
+    &Item {
+      display: flex;
+      align-items: flex-end;
+    }
+
+    &Text {
+      margin-right: 10px;
+      font-size: 18px;
+      font-weight: 700;
+      color: $white;
     }
   }
-}
 
-.user {
-  &Name {
-    font-size: 16px;
+  &Value {
     color: $white;
-  }
-
-  &Btns {
-    list-style: none;
-    display: flex;
-    align-items: center;
-    .userBtn + .userBtn {
-      margin-left: 20px;
-    }
-  }
-}
-
-.usersList {
-  list-style: none;
-  .usersItem + .usersItem {
-    margin-top: 10px;
+    font-size: 16px;
   }
 }

@@ -86,7 +86,7 @@ export class History {
 
 export class HistoryInfo {
   date: {
-    full: string,
+    full: number,
     formate: string
   };
   time: ITimeItem;
