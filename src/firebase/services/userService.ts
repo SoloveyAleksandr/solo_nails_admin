@@ -83,3 +83,25 @@ export class History {
     this.status = status;
   }
 }
+
+export class HistoryInfo {
+  date: {
+    full: string,
+    formate: string
+  };
+  time: ITimeItem;
+  info: {
+    cost: number,
+    time: number,
+    comment: string,
+  }
+  constructor(time: ITimeItem, info: {
+    cost: number,
+    time: number,
+    comment: string,
+  }) {
+    this.date = time.date;
+    this.time = time;
+    this.info = info;
+  }
+}

@@ -68,6 +68,19 @@ export interface IHistoryItem {
   status: 'await' | 'success' | 'canceled',
 }
 
+export interface IHistoryInfo {
+  date: {
+    full: string,
+    formate: string
+  },
+  time: ITimeItem,
+  info: {
+    cost: number,
+    time: number,
+    comment: string,
+  }
+}
+
 export interface ICustomWindow extends Window {
   recaptchaVerifier: any;
   hellow: any;

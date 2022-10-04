@@ -14,7 +14,7 @@ import {
 import styles from './FormInput.module.scss';
 
 interface IFormInput {
-  title: string;
+  title?: string;
   placeholder: string;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -34,9 +34,11 @@ const FormInput: FC<IFormInput> = ({
   return (
     <InputGroup w={'100%'}>
       <label className={styles.label}>
-        <span className={styles.title}>
-          {title}
-        </span>
+        {title &&
+          <span className={styles.title}>
+            {title}
+          </span>
+        }
         {info &&
           <Popover placement='auto-start'>
             <PopoverTrigger>

@@ -21,7 +21,7 @@ import DefaultBtn from '../../components/DefaultBtn/DefaultBtn';
 import ModalConteiner from '../../components/ModalContainer/ModalContainer';
 import FormInput from '../../components/FormInput/FormInput';
 import { CheckIcon, CloseIcon, ExternalLinkIcon, InfoIcon, PhoneIcon } from '@chakra-ui/icons';
-import { setLoading, setSelectedDate } from '../../store';
+import { setLoading, setSelectedDate, setSelectedUserUID } from '../../store';
 import useAuth from '../../firebase/controllers/userController';
 import { IReserveItem, ITimeItem } from '../../interfaces';
 import useTime from '../../firebase/controllers/timeController';
@@ -31,11 +31,15 @@ import {
   AccordionButton,
   AccordionPanel,
   AccordionIcon,
+  RangeSlider,
+  RangeSliderTrack,
+  RangeSliderFilledTrack,
+  RangeSliderThumb,
 } from '@chakra-ui/react';
-import styles from './ReservedScreen.module.scss';
-import moment from 'moment';
 import { NavLink } from 'react-router-dom';
 import { Time } from '../../firebase/services/timeService';
+import styles from './ReservedScreen.module.scss';
+import { HistoryInfo } from '../../firebase/services/userService';
 
 const ReservedScreen: FC = () => {
   const appState = useAppSelector(store => store.AppStore);
@@ -45,7 +49,8 @@ const ReservedScreen: FC = () => {
     getAllReserves,
     setTimeToDay,
     setTimeToFreeTime,
-    removeTimeFromReserves
+    removeTimeFromReserves,
+    closeTime,
   } = useTime();
 
   const [reservedList, setReservedList] = useState<IReserveItem[]>([]);
@@ -72,6 +77,10 @@ const ReservedScreen: FC = () => {
   });
 
   const [cancelModal, setCancelModal] = useState(false);
+  const [confirmModal, setConfirmModal] = useState(false);
+  const [time, setTime] = useState(90);
+  const [cost, setCost] = useState(25);
+  const [comment, setComment] = useState('');
 
   useEffect(() => {
     (async () => {
@@ -125,6 +134,56 @@ const ReservedScreen: FC = () => {
     }
   };
 
+  const openConfirmModal = (time: ITimeItem) => {
+    setTimeItem(time);
+    setConfirmModal(true);
+  };
+
+  const closeConfirmModal = () => {
+    setConfirmModal(false);
+    setComment('');
+    setCost(25);
+    setTime(90);
+  };
+
+  const formateTime = () => {
+    if (time < 60) {
+      return `${time}мин.`;
+    } else {
+      const hour = Math.trunc(time / 60);
+      const min = time % 60;
+      return `${hour}ч. ${min}м.`;
+    }
+  };
+
+  const finishWork = async () => {
+    try {
+      reduxDispatch(setLoading(true));
+      const historyInfo = new HistoryInfo(
+        timeItem,
+        {
+          cost: cost,
+          time: time,
+          comment: comment,
+        }
+      );
+      closeConfirmModal();
+      await closeTime({ ...historyInfo });
+      await getReserves();
+      toast({
+        title: 'Запись завершена',
+        status: 'success',
+        isClosable: true,
+        duration: 5000,
+        position: 'top',
+      });
+    } catch (e) {
+      console.log(e);
+    } finally {
+      reduxDispatch(setLoading(false));
+    }
+  };
+
   return (
     <div className={styles.reserved}>
       <Header>
@@ -171,23 +230,44 @@ const ReservedScreen: FC = () => {
                       <InfoContainer>
                         <span className={styles.timeItemTitle}>{item.time}</span>
                         <div className={styles.btnWrapper}>
+                          {item.client.uid ?
+                            <NavLink
+                              className={styles.btn}
+                              onClick={() => reduxDispatch(setSelectedUserUID(item.client.uid))}
+                              to={'/user'}>
+                              <IconButton
+                                variant='outline'
+                                colorScheme='whiteAlpha'
+                                aria-label='btn'
+                                size={'xs'}
+                                color="#fff"
+                                icon={
+                                  <svg width="12" height="14" viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="3" width="6" height="6" rx="3" fill="white" />
+                                    <path d="M0 10.5V10.5C0.939219 8.67374 2.71599 7.4257 4.75256 7.1617L4.82655 7.15211C5.60557 7.05113 6.39436 7.05113 7.17338 7.15211L7.24745 7.16171C9.28402 7.42571 11.0608 8.67374 12 10.5V10.5V10.5C10.7728 12.6476 8.47348 14 5.99996 14V14V14C3.80354 14 1.74233 12.9393 0.465688 11.152L0 10.5Z" fill="white" />
+                                  </svg>
+                                }
+                              />
+                            </NavLink>
+                            :
+                            <IconButton
+                              onClick={() => openUserInfo(item)}
+                              className={styles.btn}
+                              variant='outline'
+                              colorScheme='whiteAlpha'
+                              aria-label='btn'
+                              size={'xs'}
+                              color="#fff"
+                              icon={
+                                <svg width="12" height="14" viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <rect x="3" width="6" height="6" rx="3" fill="white" />
+                                  <path d="M0 10.5V10.5C0.939219 8.67374 2.71599 7.4257 4.75256 7.1617L4.82655 7.15211C5.60557 7.05113 6.39436 7.05113 7.17338 7.15211L7.24745 7.16171C9.28402 7.42571 11.0608 8.67374 12 10.5V10.5V10.5C10.7728 12.6476 8.47348 14 5.99996 14V14V14C3.80354 14 1.74233 12.9393 0.465688 11.152L0 10.5Z" fill="white" />
+                                </svg>
+                              }
+                            />
+                          }
                           <IconButton
-                            onClick={() => openUserInfo(item)}
-                            className={styles.btn}
-                            variant='outline'
-                            colorScheme='whiteAlpha'
-                            aria-label='btn'
-                            size={'xs'}
-                            color="#fff"
-                            icon={
-                              <svg width="12" height="14" viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect x="3" width="6" height="6" rx="3" fill="white" />
-                                <path d="M0 10.5V10.5C0.939219 8.67374 2.71599 7.4257 4.75256 7.1617L4.82655 7.15211C5.60557 7.05113 6.39436 7.05113 7.17338 7.15211L7.24745 7.16171C9.28402 7.42571 11.0608 8.67374 12 10.5V10.5V10.5C10.7728 12.6476 8.47348 14 5.99996 14V14V14C3.80354 14 1.74233 12.9393 0.465688 11.152L0 10.5Z" fill="white" />
-                              </svg>
-                            }
-                          />
-                          <IconButton
-                            onClick={() => console.log('finish', item.date.formate, item.time)}
+                            onClick={() => openConfirmModal(item)}
                             className={styles.btn}
                             variant='outline'
                             colorScheme='whiteAlpha'
@@ -352,6 +432,71 @@ const ReservedScreen: FC = () => {
               type='button'
               value='закрыть' />
           </div>
+        </div>
+      </ModalConteiner>
+
+      <ModalConteiner
+        isOpen={confirmModal}
+        onClose={closeConfirmModal}>
+
+        <ul className={styles.confirmList}>
+          <li className={styles.confirmItem}>
+            <h6 className={styles.confirmTitle}>
+              <span>время сеанса</span>
+              <span>{formateTime()}</span>
+            </h6>
+            <RangeSlider
+              defaultValue={[0, time]}
+              value={[30, time]}
+              min={30}
+              max={200}
+              onChange={(val) => setTime(val[1])}>
+              <RangeSliderTrack bg={'rgba(15, 15, 15, 0.2)'}>
+                <RangeSliderFilledTrack bg={'rgba(15, 15, 15, 0.8)'} />
+              </RangeSliderTrack>
+              <RangeSliderThumb defaultValue={time} index={1} />
+            </RangeSlider>
+          </li>
+          <li className={styles.confirmItem}>
+            <h6 className={styles.confirmTitle}>
+              <span>стоимость работы</span>
+              <span>{cost}руб.</span>
+            </h6>
+            <RangeSlider
+              defaultValue={[0, cost]}
+              value={[10, cost]}
+              min={10}
+              max={100}
+              onChange={(val) => setCost(val[1])}>
+              <RangeSliderTrack bg={'rgba(15, 15, 15, 0.2)'}>
+                <RangeSliderFilledTrack bg={'rgba(15, 15, 15, 0.8)'} />
+              </RangeSliderTrack>
+              <RangeSliderThumb defaultValue={cost} index={1} />
+            </RangeSlider>
+          </li>
+          <li className={styles.confirmItem}>
+            <h6 className={styles.confirmTitle}>
+              <span>комментарий</span>
+              <span></span>
+            </h6>
+            <FormInput
+              value={comment}
+              placeholder='Комментарий...'
+              onChange={(e) => setComment(e.target.value)} />
+          </li>
+        </ul>
+
+        <div className={styles.confirmBtn}>
+          <DefaultBtn
+            handleClick={finishWork}
+            dark={true}
+            type='button'
+            value='завершить' />
+          <DefaultBtn
+            handleClick={closeConfirmModal}
+            dark={true}
+            type='button'
+            value='отмена' />
         </div>
       </ModalConteiner>
 

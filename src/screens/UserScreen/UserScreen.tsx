@@ -58,6 +58,7 @@ const UserScreen: FC = () => {
 
   const saveComment = async () => {
     try {
+      setCommentModal(false);
       reduxDispatch(setLoading(true));
       await setDescription(appState.selectedUserUID, comment);
       await getUser();
@@ -83,7 +84,7 @@ const UserScreen: FC = () => {
       </Header>
 
       <ScreenTitle
-        title='мой аккаунт' />
+        title='страница клиента' />
 
       <Container>
         <ul className={styles.infoList}>
