@@ -26,6 +26,8 @@ const HistoryScreen: FC = () => {
 
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [startDateMS, setStartDateMS] = useState(0);
+  const [endDateMS, setEndDateMS] = useState(0);
   const [history, setHistory] = useState<IHistoryInfo[]>([]);
 
   useEffect(() => {
@@ -36,15 +38,17 @@ const HistoryScreen: FC = () => {
     const endMS = date.endOf("month").valueOf();
     setStartDate(start);
     setEndDate(end);
+    setStartDateMS(startMS);
+    setEndDateMS(endMS);
     (async () => {
       await getHistory(startMS, endMS);
     })()
   }, []);
 
-  async function getHistory(start: number, end: number) {
+  async function getHistory(start?: number, end?: number) {
     try {
       reduxDispatch(setLoading(true));
-      const historyList = await getAllHistory(start, end);
+      const historyList = await getAllHistory(start || startDateMS, end || endDateMS);
       console.log(historyList);
     } catch (e) {
       console.log(e)
@@ -52,6 +56,15 @@ const HistoryScreen: FC = () => {
       reduxDispatch(setLoading(false));
     }
   }
+
+  const setStartDateInput = (value: string) => {
+    setStartDate(value);
+    setStartDateMS(moment(value).valueOf());
+  };
+  const setEndDateInput = (value: string) => {
+    setEndDate(value);
+    setEndDateMS(moment(value).valueOf());
+  };
 
   return (
     <div className={styles.reserved}>
@@ -67,33 +80,39 @@ const HistoryScreen: FC = () => {
         <div className={styles.range}>
           <span className={styles.rangeTitle}>Промежуток времени</span>
           <div className={styles.rangeDateWrapper}>
-            <div className={styles.rangeDateItem}>
-              <span className={styles.rangeDateText}>с</span>
-              <Input
-                color={'#fff'}
-                placeholder="Select Date"
-                size="md"
-                type='date'
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-              />
+            <div className={styles.rangeDateBox}>
+              <div className={styles.rangeDateItem}>
+                <span className={styles.rangeDateText}>с</span>
+                <Input
+                  color={'#fff'}
+                  width={'120px'}
+                  p={'5px'}
+                  placeholder="Select Date"
+                  size="md"
+                  type='date'
+                  value={startDate}
+                  onChange={(e) => setStartDateInput(e.target.value)}
+                />
+              </div>
+              <div className={styles.rangeDateItem}>
+                <span className={styles.rangeDateText}>по</span>
+                <Input
+                  color={'#fff'}
+                  width={'120px'}
+                  p={'5px'}
+                  placeholder="Select Date"
+                  size="md"
+                  type='date'
+                  value={endDate}
+                  onChange={(e) => setEndDateInput(e.target.value)}
+                />
+              </div>
             </div>
-            <div className={styles.rangeDateItem}>
-              <span className={styles.rangeDateText}>по</span>
-              <Input
-                color={'#fff'}
-                placeholder="Select Date"
-                size="md"
-                type='date'
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-              />
-            </div>
-            <div className={styles.rangeDateItem}>
+            <div className={styles.rangeDateBtn}>
               <IconButton
-              onClick={async() => {
-                await getHistory(moment(startDate).valueOf(), moment(endDate).valueOf());
-              }}
+                onClick={async () => {
+                  await getHistory();
+                }}
                 variant='outline'
                 colorScheme='whiteAlpha'
                 aria-label='btn'

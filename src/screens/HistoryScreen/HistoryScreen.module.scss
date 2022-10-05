@@ -4,6 +4,7 @@
   margin: 15px 0;
   padding-bottom: 15px;
   border-bottom: 1px solid $white50;
+
   &Title {
     font-size: 18px;
     font-weight: 700;
@@ -16,10 +17,17 @@
   &Date {
     &Wrapper {
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
     }
-    &Item + &Item {
-      margin-left: 25px;
+
+    &Box {
+      display: flex;
+      align-items: center;
+
+      .rangeDateItem+.rangeDateItem {
+        margin: 0 15px 0 15px;
+      }
     }
 
     &Item {
@@ -38,5 +46,50 @@
   &Value {
     color: $white;
     font-size: 16px;
+  }
+}
+
+@media (max-width: 390px) {
+  .range {
+
+    &Date {
+      &Wrapper {
+        display: flex;
+        align-items: flex-end;
+      }
+
+      &Box {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+
+        .rangeDateItem+.rangeDateItem {
+          margin: 15px 0 0 0;
+        }
+      }
+
+      &Item {
+        display: flex;
+        align-items: flex-end;
+        margin: 0;
+      }
+
+      &Btn {
+        margin-left: 15px;
+      }
+
+      &Text {
+        width: 30px;
+        margin-right: 10px;
+        font-size: 18px;
+        font-weight: 700;
+        color: $white;
+      }
+    }
+
+    &Value {
+      color: $white;
+      font-size: 16px;
+    }
   }
 }
