@@ -220,12 +220,14 @@ export default function useTime() {
     try {
       await removeTimeFromDay(historyInfo.time);
       await removeTimeFromReserves(historyInfo.time);
-      await setUserHistory({
-        id: historyInfo.time.id,
-        time: historyInfo.time,
-        status: 'success',
-      });
       await addDoc(historyRef, historyInfo);
+      if (historyInfo.time.client.uid) {
+        await setUserHistory({
+          id: historyInfo.time.id,
+          time: historyInfo.time,
+          status: 'success',
+        });
+      }
     } catch (e) {
       errorHandler(e);
     }
