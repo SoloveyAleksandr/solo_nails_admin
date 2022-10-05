@@ -1,6 +1,6 @@
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, User as FBUser } from "firebase/auth";
 import { collection, deleteField, doc, getDoc, getDocs, query, setDoc, updateDoc, where } from "firebase/firestore";
-import { IHistoryItem, ITimeItem } from "../../interfaces";
+import { IHistoryItem, ITimeItem, IUser } from "../../interfaces";
 import { setCurrentUserInfo } from "../../store";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { app, authentification, DB } from "../firebase";
@@ -71,6 +71,19 @@ export default function useAuth() {
         }
     };
 
+    const getAllUsers = async () => {
+        try {
+            const userSnap = await getDocs(userRef);
+            const list: IUser[] = [];
+            userSnap.forEach((el) => {
+                list.push(el.data() as IUser);
+            });
+            return list;
+        } catch (e) {
+            errorHandler(e);
+        }
+    };
+
     const getUserInfo = async (uid: string) => {
         try {
             const userSnap = await getDoc(doc(userRef, uid).withConverter(userConverter));
@@ -126,6 +139,7 @@ export default function useAuth() {
     return {
         getUserInfo,
         getCurrentUser,
+        getAllUsers,
 
         userSignOut,
 

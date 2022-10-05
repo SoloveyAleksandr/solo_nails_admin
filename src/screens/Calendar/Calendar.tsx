@@ -17,6 +17,7 @@ import styles from './Calendar.module.scss';
 import { NavLink } from 'react-router-dom';
 import { useService } from '../../firebase/controllers/serviceController';
 import Container from '../../components/Container/Container';
+import useTime from '../../firebase/controllers/timeController';
 
 const Calendar: FC = () => {
   const { userSignOut } = useAuth();
@@ -91,6 +92,13 @@ const Calendar: FC = () => {
           <li
             className={styles.menuItem}>
             <NavLink
+              to={'/all-users'}>
+              все пользователи
+            </NavLink>
+          </li>
+          <li
+            className={styles.menuItem}>
+            <NavLink
               to={'/services'}>
               услуги и цены
             </NavLink>
@@ -101,6 +109,13 @@ const Calendar: FC = () => {
               onClick={() => reduxDispatch(setSelectedUserUID(appState.currentUserInfo.uid))}
               to={'/my-account'}>
               мой аккаунт
+            </NavLink>
+          </li>
+          <li
+            className={styles.menuItem}>
+            <NavLink
+              to={'/history'}>
+              история
             </NavLink>
           </li>
           <li

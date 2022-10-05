@@ -1,0 +1,171 @@
+@import "../../var";
+
+.accordion {
+  margin: 10px 0;
+
+  &Item {
+    border: 1px solid $white80;
+    border-radius: 8px;
+    margin-bottom: 15px;
+  }
+
+  &Header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &Title {
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: $white;
+    margin-right: 15px;
+  }
+
+  &Date {
+    &Wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    &Box {
+      display: flex;
+      align-items: center;
+
+      .accordionDateItem+.accordionDateItem {
+        margin: 0 15px 0 15px;
+      }
+    }
+
+    &Item {
+      display: flex;
+      align-items: flex-end;
+    }
+
+    &Text {
+      margin-right: 10px;
+      font-size: 18px;
+      font-weight: 700;
+      color: $white;
+    }
+  }
+
+  &Value {
+    color: $white;
+    font-size: 16px;
+  }
+}
+
+.info {
+  &List {
+    list-style: none;
+  }
+
+  &Item+&Item {
+    margin-top: 15px;
+  }
+
+  &Item {
+    color: $white;
+    font-weight: 700;
+
+    &Title {
+      text-transform: uppercase;
+      font-size: 12px;
+    }
+
+    &Value {
+      font-size: 14px;
+    }
+  }
+}
+
+.history {
+  &List {
+    list-style: none;
+  }
+
+  &Title {
+    font-size: 18px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: $white;
+  }
+}
+
+@media (max-width: 424px) {
+  .accordion {
+
+    &Date {
+      &Wrapper {
+        display: flex;
+        align-items: flex-end;
+      }
+
+      &Box {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+
+        .accordionDateItem+.accordionDateItem {
+          margin: 15px 0 0 0;
+        }
+      }
+
+      &Item {
+        display: flex;
+        align-items: flex-end;
+        margin: 0;
+      }
+
+      &Btn {
+        margin-left: 15px;
+      }
+
+      &Text {
+        width: 30px;
+        margin-right: 10px;
+        font-size: 18px;
+        font-weight: 700;
+        color: $white;
+      }
+    }
+
+    &Value {
+      color: $white;
+      font-size: 16px;
+    }
+  }
+}
+
+.userInfo {
+  &List {
+    list-style: none;
+  }
+
+  &Item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 15px;
+  }
+
+  &Title {
+    text-transform: uppercase;
+  }
+
+  &Comment {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 15px;
+  }
+}
+
+.btnWrapper {
+  display: flex;  
+  justify-content: flex-end;
+}

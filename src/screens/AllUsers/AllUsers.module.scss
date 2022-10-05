@@ -1,0 +1,44 @@
+@import "../../var";
+
+.search {
+  &Wrapper {
+    margin: 15px 0 15px 0;
+  }
+  &Title {
+    font-size: 18px;
+    font-weight: 700;
+    color: $white;
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  &Input {
+    color: $white80;
+    &::placeholder {
+      color: $white50;
+    }
+  }
+}
+
+.user {
+  &Name {
+    font-size: 16px;
+    color: $white;
+  }
+
+  &Btns {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    .userBtn + .userBtn {
+      margin-left: 20px;
+    }
+  }
+}
+
+.usersList {
+  list-style: none;
+  .usersItem + .usersItem {
+    margin-top: 10px;
+  }
+}

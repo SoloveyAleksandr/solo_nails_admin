@@ -3,9 +3,11 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+import AllUsers from "./screens/AllUsers/AllUsers";
 import Calendar from "./screens/Calendar/Calendar";
 import DayScreen from "./screens/DayScreen/DayScreen";
 import FreeTime from "./screens/FreeTime/FreeTime";
+import HistoryScreen from "./screens/HistoryScreen/HistoryScreen";
 import Login from "./screens/Login/Login";
 import MyAccount from "./screens/MyAccount/MyAccount";
 import ReservedScreen from "./screens/ReservedScreen/ReservedScreen";
@@ -28,6 +30,8 @@ function AppRouter() {
         <Route path="waiting" element={<WaitingScreen />} />
         <Route path="calendar" element={<Calendar />} />
         <Route path="user" element={<UserScreen />} />
+        <Route path="all-users" element={<AllUsers />} />
+        <Route path="history" element={<HistoryScreen />} />
         <Route path="/*" element={<Navigate to={'/calendar'} />}></Route>
       </Routes>
     )

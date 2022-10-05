@@ -41,7 +41,7 @@ export default function useTime() {
   const setTimeToDay = async (time: ITimeItem) => {
     try {
       const id = time.id;
-      const date = time.date.full;
+      const date = time.date.full.toString();
       const timeRef = doc(dayRef, date);
       await updateDoc(timeRef, {
         ['timeList.' + [id]]: time
@@ -54,7 +54,7 @@ export default function useTime() {
   const setTimeToFreeTime = async (time: ITimeItem) => {
     try {
       const id = time.id;
-      const date = time.date.full;
+      const date = time.date.full.toString();
       const timeRef = doc(freeTimeRef, date);
       await updateDoc(timeRef, {
         ['timeList.' + [id]]: time
@@ -67,7 +67,7 @@ export default function useTime() {
   const setTimeToReserves = async (time: ITimeItem) => {
     try {
       const id = time.id;
-      const date = time.date.full;
+      const date = time.date.full.toString();
       const timeRef = doc(reservesRef, date);
       await updateDoc(timeRef, {
         ['timeList.' + [id]]: time
@@ -80,7 +80,7 @@ export default function useTime() {
   const setTimeToWaiting = async (time: ITimeItem) => {
     try {
       const id = time.id;
-      const date = time.date.full;
+      const date = time.date.full.toString();
       const timeRef = doc(waitingRef, date);
       await updateDoc(timeRef, {
         ['timeList.' + [id]]: time
@@ -107,7 +107,7 @@ export default function useTime() {
   // 
   const removeTimeFromDay = async (time: ITimeItem) => {
     try {
-      const date = time.date.full;
+      const date = time.date.full.toString();
       const timeRef = doc(dayRef, date);
       await updateDoc(timeRef, {
         ['timeList.' + [time.id]]: deleteField()
@@ -119,8 +119,7 @@ export default function useTime() {
 
   const removeTimeFromFreeTime = async (time: ITimeItem) => {
     try {
-      const id = time.id;
-      const date = time.date.full;
+      const date = time.date.full.toString();
       const timeRef = doc(freeTimeRef, date);
       await updateDoc(timeRef, {
         ['timeList.' + [time.id]]: deleteField()
@@ -132,8 +131,7 @@ export default function useTime() {
 
   const removeTimeFromReserves = async (time: ITimeItem) => {
     try {
-      const id = time.id;
-      const date = time.date.full;
+      const date = time.date.full.toString();
       const timeRef = doc(reservesRef, date);
       await updateDoc(timeRef, {
         ['timeList.' + [time.id]]: deleteField()
@@ -145,7 +143,7 @@ export default function useTime() {
 
   const removeTimeFromWaiting = async (time: ITimeItem) => {
     try {
-      const date = time.date.full;
+      const date = time.date.full.toString();
       const timeRef = doc(waitingRef, date);
       await updateDoc(timeRef, {
         ['timeList.' + [time.id]]: deleteField()
@@ -222,12 +220,28 @@ export default function useTime() {
     try {
       await removeTimeFromDay(historyInfo.time);
       await removeTimeFromReserves(historyInfo.time);
-      await setUserHistory({
-        id: historyInfo.time.id,
-        time: historyInfo.time,
-        status: 'success',
-      });
       await addDoc(historyRef, historyInfo);
+      if (historyInfo.time.client.uid) {
+        await setUserHistory({
+          id: historyInfo.time.id,
+          time: historyInfo.time,
+          status: 'success',
+        });
+      }
+    } catch (e) {
+      errorHandler(e);
+    }
+  };
+
+  const getAllHistory = async (start: number, end: number) => {
+    try {
+      const data: IHistoryInfo[] = [];
+      const q = query(historyRef, where("date.full", '>=', start), where("date.full", '<=', end));
+      const snap = await getDocs(q);
+      snap.forEach(el => {
+        data.push(el.data() as IHistoryInfo);
+      });
+      return data;
     } catch (e) {
       errorHandler(e);
     }
@@ -247,6 +261,7 @@ export default function useTime() {
     getAllReserves,
     getFreeTime,
     getAllWaiting,
+    getAllHistory,
 
     bookATime,
     confirmTime,
