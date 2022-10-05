@@ -32,7 +32,23 @@
         "destination": "/index.html"
       },
       {
+        "source": "/waiting",
+        "destination": "/index.html"
+      },
+      {
         "source": "/calendar",
+        "destination": "/index.html"
+      },
+      {
+        "source": "/user",
+        "destination": "/index.html"
+      },
+      {
+        "source": "/all-users",
+        "destination": "/index.html"
+      },
+      {
+        "source": "/history",
         "destination": "/index.html"
       }
     ]
