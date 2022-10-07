@@ -5,7 +5,7 @@ import Header from '../../components/Header/Header';
 import InfoContainer from '../../components/InfoContainer/InfoContainer';
 import Logo from '../../components/Logo/Logo';
 import ScreenTitle from '../../components/ScreenTitle/ScreenTitle';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { useAppDispatch } from '../../store/hooks';
 import {
   IconButton,
   Popover,
@@ -13,7 +13,6 @@ import {
   PopoverBody,
   PopoverCloseButton,
   PopoverContent,
-  PopoverHeader,
   PopoverTrigger,
   useToast,
 } from '@chakra-ui/react';
@@ -22,7 +21,6 @@ import ModalConteiner from '../../components/ModalContainer/ModalContainer';
 import FormInput from '../../components/FormInput/FormInput';
 import { CheckIcon, CloseIcon, ExternalLinkIcon, InfoIcon, PhoneIcon } from '@chakra-ui/icons';
 import { setLoading, setSelectedDate, setSelectedUserUID } from '../../store';
-import useAuth from '../../firebase/controllers/userController';
 import { IReserveItem, ITimeItem } from '../../interfaces';
 import useTime from '../../firebase/controllers/timeController';
 import {
@@ -39,10 +37,10 @@ import {
 import { NavLink } from 'react-router-dom';
 import { Time } from '../../firebase/services/timeService';
 import styles from './ReservedScreen.module.scss';
-import { HistoryInfo } from '../../firebase/services/userService';
+import { History, HistoryInfo } from '../../firebase/services/userService';
+import useAuth from '../../firebase/controllers/userController';
 
 const ReservedScreen: FC = () => {
-  const appState = useAppSelector(store => store.AppStore);
   const reduxDispatch = useAppDispatch();
   const toast = useToast();
   const {
@@ -50,8 +48,14 @@ const ReservedScreen: FC = () => {
     setTimeToDay,
     setTimeToFreeTime,
     removeTimeFromReserves,
+    removeTimeFromDay,
     closeTime,
   } = useTime();
+
+  const {
+    removeUserHistory,
+    setUserHistory,
+  } = useAuth();
 
   const [reservedList, setReservedList] = useState<IReserveItem[]>([]);
   const [userModal, setUserModal] = useState(false);
@@ -114,18 +118,40 @@ const ReservedScreen: FC = () => {
     setCancelModal(true);
   };
 
-  const cancelReserve = async () => {
+  const cancelReserve = async (withMark: boolean) => {
     try {
-      reduxDispatch(setLoading(true));
       setCancelModal(false);
+      reduxDispatch(setLoading(true));
       const newTimeItem = new Time({
         id: timeItem.id,
         date: timeItem.date,
         time: timeItem.time,
       });
-      await setTimeToDay({ ...newTimeItem });
-      await setTimeToFreeTime({ ...newTimeItem });
-      await removeTimeFromReserves({ ...timeItem });
+      if (withMark) {
+        const historiItem = new History(timeItem, 'canceled');
+        await removeTimeFromReserves(timeItem);
+        await removeTimeFromDay(timeItem);
+        await setUserHistory({ ...historiItem });
+        toast({
+          title: `Запись на ${timeItem.date.formate} ${timeItem.time} удалена с занесением в историю клиента`,
+          status: 'success',
+          isClosable: true,
+          duration: 5000,
+          position: 'top',
+        });
+      } else {
+        await setTimeToDay({ ...newTimeItem });
+        await setTimeToFreeTime({ ...newTimeItem });
+        await removeTimeFromReserves(timeItem);
+        await removeUserHistory(timeItem);
+        toast({
+          title: `Запись на ${timeItem.date.formate} ${timeItem.time} снова свободна`,
+          status: 'success',
+          isClosable: true,
+          duration: 5000,
+          position: 'top',
+        });
+      }
       await getReserves();
     } catch (e) {
       console.log(e);
@@ -360,6 +386,7 @@ const ReservedScreen: FC = () => {
         </div>
       </ModalConteiner>
 
+      {/* отмена записи */}
       <ModalConteiner
         isOpen={cancelModal}
         onClose={() => setCancelModal(false)}>
@@ -389,7 +416,7 @@ const ReservedScreen: FC = () => {
                 </Popover>
               </div>
               <DefaultBtn
-                handleClick={() => setCancelModal(false)}
+                handleClick={() => cancelReserve(true)}
                 dark={true}
                 type='button'
                 value='отменить' />
@@ -420,7 +447,7 @@ const ReservedScreen: FC = () => {
               </Popover>
             </div>
             <DefaultBtn
-              handleClick={cancelReserve}
+              handleClick={() => cancelReserve(false)}
               dark={true}
               type='button'
               value='отменить' />
@@ -435,6 +462,7 @@ const ReservedScreen: FC = () => {
         </div>
       </ModalConteiner>
 
+      {/* завершение записи */}
       <ModalConteiner
         isOpen={confirmModal}
         onClose={closeConfirmModal}>

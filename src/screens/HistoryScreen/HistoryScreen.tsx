@@ -259,7 +259,9 @@ const HistoryScreen: FC = () => {
           <ul className={styles.historyList}>
             {
               historyList.map(item => (
-                <li className={styles.historyItem}>
+                <li
+                  key={item.time.id}
+                  className={styles.historyItem}>
                   <AccordionItem className={styles.accordionItem}>
                     <AccordionButton
                       display={'block'}>

@@ -8,17 +8,11 @@ import ScreenTitle from '../../components/ScreenTitle/ScreenTitle';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import {
   IconButton,
-  Popover,
-  PopoverArrow,
-  PopoverBody,
-  PopoverCloseButton,
-  PopoverContent,
-  PopoverTrigger,
   useToast,
 } from '@chakra-ui/react';
 import DefaultBtn from '../../components/DefaultBtn/DefaultBtn';
 import ModalConteiner from '../../components/ModalContainer/ModalContainer';
-import { CheckIcon, CloseIcon, ExternalLinkIcon, InfoIcon, PhoneIcon } from '@chakra-ui/icons';
+import { CheckIcon, CloseIcon, ExternalLinkIcon } from '@chakra-ui/icons';
 import { setLoading, setSelectedDate, setSelectedUserUID } from '../../store';
 import { IReserveItem, ITimeItem } from '../../interfaces';
 import useTime from '../../firebase/controllers/timeController';
@@ -41,9 +35,8 @@ const WaitingScreen: FC = () => {
   const toast = useToast();
   const {
     getAllWaiting,
-    setTimeToDay,
-    setTimeToFreeTime,
-    removeTimeFromReserves,
+    removeTimeFromDay,
+    removeTimeFromWaiting,
     confirmTime,
   } = useTime();
 
@@ -107,15 +100,16 @@ const WaitingScreen: FC = () => {
     try {
       reduxDispatch(setLoading(true));
       setCancelModal(false);
-      const newTimeItem = new Time({
-        id: timeItem.id,
-        date: timeItem.date,
-        time: timeItem.time,
-      });
-      await setTimeToDay({ ...newTimeItem });
-      await setTimeToFreeTime({ ...newTimeItem });
-      await removeTimeFromReserves({ ...timeItem });
+      await removeTimeFromDay(timeItem);
+      await removeTimeFromWaiting(timeItem);
       await getWaiting();
+      toast({
+        title: `Запись на ${timeItem.date.formate} ${timeItem.time} отклонена`,
+        status: 'success',
+        isClosable: true,
+        duration: 5000,
+        position: 'top',
+      });
     } catch (e) {
       console.log(e);
     } finally {
@@ -146,6 +140,13 @@ const WaitingScreen: FC = () => {
       await confirmTime({ ...newTimeItem });
       await setUserHistory({ ...historyItem });
       await getWaiting();
+      toast({
+        title: `Запись на ${timeItem.date.formate} ${timeItem.time} подтверждена`,
+        status: 'success',
+        isClosable: true,
+        duration: 5000,
+        position: 'top',
+      });
     } catch (e) {
       console.log(e);
     } finally {
@@ -253,68 +254,15 @@ const WaitingScreen: FC = () => {
         isOpen={cancelModal}
         onClose={() => setCancelModal(false)}>
         <div className={styles.cancelWrapper}>
-          {
-            timeItem.client.uid &&
-            <div className={styles.cancelBtn}>
-              <div className={styles.cancelTitle}>
-                <span>отменить с пометкой</span>
-                <Popover placement='auto-start'>
-                  <PopoverTrigger>
-                    <button
-                      type="button">
-                      <InfoIcon />
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent>
-                    <PopoverArrow />
-                    <PopoverCloseButton />
-                    <PopoverBody
-                      className={styles.popover}>
-                      <p className={styles.cancelBody}>
-                        Запись удалится, а пометка о отмененной записи будет занесена в историю клиента
-                      </p>
-                    </PopoverBody>
-                  </PopoverContent>
-                </Popover>
-              </div>
-              <DefaultBtn
-                handleClick={() => setCancelModal(false)}
-                dark={true}
-                type='button'
-                value='отменить' />
-            </div>
-          }
-          <div className={styles.cancelBtn}>
-            <div className={styles.cancelTitle}>
-              <span>отменить без пометки</span>
-              <Popover
-                placement='auto-start' >
-                <PopoverTrigger>
-                  <button
-                    type="button"
-                    className={styles.infoBtn}>
-                    <InfoIcon />
-                  </button>
-                </PopoverTrigger>
-                <PopoverContent>
-                  <PopoverArrow />
-                  <PopoverCloseButton />
-                  <PopoverBody
-                    className={styles.popover} >
-                    <p className={styles.cancelBody}>
-                      Запись вернется в статус свободной, а пометка о отмененной записи не будет занесена в историю клиента
-                    </p>
-                  </PopoverBody>
-                </PopoverContent>
-              </Popover>
-            </div>
+          <h6 className={styles.cancelTitle}>
+            отказать в записи на {timeItem.time}?
+          </h6>
+          <div className={styles.cancelBtns}>
             <DefaultBtn
               handleClick={cancelReserve}
               dark={true}
               type='button'
-              value='отменить' />
-          </div>
-          <div className={styles.cancelClose}>
+              value='отказать' />
             <DefaultBtn
               handleClick={() => setCancelModal(false)}
               dark={true}

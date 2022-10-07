@@ -84,29 +84,18 @@
 }
 
 .cancel {
-  &Body {
-    font-weight: 600;
-    text-transform: none;
-  }
-
-  &Btn {
-    margin-bottom: 15px;
-  }
-
-  &Title {
-    width: 100%;
-    font-size: 16px;
-    font-weight: 700;
-    text-transform: uppercase;
+  &Btns {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 5px;
   }
 
-  &Close {
-    display: flex;
-    justify-content: flex-end;
+  &Title {
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 25px;
+    text-align: center;
   }
 }
 
