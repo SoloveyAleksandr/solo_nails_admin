@@ -5,7 +5,7 @@ import Header from '../../components/Header/Header';
 import InfoContainer from '../../components/InfoContainer/InfoContainer';
 import Logo from '../../components/Logo/Logo';
 import ScreenTitle from '../../components/ScreenTitle/ScreenTitle';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { useAppDispatch } from '../../store/hooks';
 import {
   IconButton,
   Popover,
@@ -13,7 +13,6 @@ import {
   PopoverBody,
   PopoverCloseButton,
   PopoverContent,
-  PopoverHeader,
   PopoverTrigger,
   useToast,
 } from '@chakra-ui/react';
@@ -22,7 +21,6 @@ import ModalConteiner from '../../components/ModalContainer/ModalContainer';
 import FormInput from '../../components/FormInput/FormInput';
 import { CheckIcon, CloseIcon, ExternalLinkIcon, InfoIcon, PhoneIcon } from '@chakra-ui/icons';
 import { setLoading, setSelectedDate, setSelectedUserUID } from '../../store';
-import useAuth from '../../firebase/controllers/userController';
 import { IReserveItem, ITimeItem } from '../../interfaces';
 import useTime from '../../firebase/controllers/timeController';
 import {
@@ -42,7 +40,6 @@ import styles from './ReservedScreen.module.scss';
 import { HistoryInfo } from '../../firebase/services/userService';
 
 const ReservedScreen: FC = () => {
-  const appState = useAppSelector(store => store.AppStore);
   const reduxDispatch = useAppDispatch();
   const toast = useToast();
   const {
@@ -360,6 +357,7 @@ const ReservedScreen: FC = () => {
         </div>
       </ModalConteiner>
 
+      {/* отмена записи */}
       <ModalConteiner
         isOpen={cancelModal}
         onClose={() => setCancelModal(false)}>
@@ -435,6 +433,7 @@ const ReservedScreen: FC = () => {
         </div>
       </ModalConteiner>
 
+      {/* завершение записи */}
       <ModalConteiner
         isOpen={confirmModal}
         onClose={closeConfirmModal}>

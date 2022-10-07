@@ -7,10 +7,20 @@ import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import {
   IconButton,
   Input,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverTrigger,
+  RangeSlider,
+  RangeSliderFilledTrack,
+  RangeSliderThumb,
+  RangeSliderTrack,
   Switch,
   useToast,
 } from '@chakra-ui/react';
-import { AddIcon, CheckIcon, CloseIcon, PhoneIcon } from '@chakra-ui/icons';
+import { AddIcon, CheckIcon, CloseIcon, InfoIcon, PhoneIcon } from '@chakra-ui/icons';
 import { setLoading, setSelectedUserUID } from "../../store";
 import useDay from "../../firebase/controllers/dayController";
 import ModalConteiner from "../../components/ModalContainer/ModalContainer";
@@ -24,6 +34,8 @@ import { NavLink } from "react-router-dom";
 
 import styles from './DayScreen.module.scss';
 import { ITimeItem } from "../../interfaces";
+import { History, HistoryInfo } from "../../firebase/services/userService";
+import useAuth from "../../firebase/controllers/userController";
 
 const DayScreen: FC = () => {
   const {
@@ -35,8 +47,16 @@ const DayScreen: FC = () => {
     removeTimeFromFreeTime,
     removeTimeFromReserves,
 
+    confirmTime,
+    closeTime,
   } = useTime();
-  const { getDay } = useDay();
+
+  const {
+    getDay,
+  } = useDay();
+
+  const { setUserHistory } = useAuth();
+
   const toast = useToast();
   const appState = useAppSelector(store => store.AppStore);
   const reduxDispatch = useAppDispatch();
@@ -72,6 +92,16 @@ const DayScreen: FC = () => {
   const [comment, setComment] = useState('');
   const [isOffline, setIsOffline] = useState(false);
   const [edit, setEdit] = useState(false);
+
+  const [confirmModal, setConfirmModal] = useState(false);
+
+  const [finishModal, setFinishModal] = useState(false);
+  const [workTime, setWorkTime] = useState(90);
+  const [cost, setCost] = useState(25);
+  const [workComment, setWorkComment] = useState('');
+
+  const [cancelModal, setCancelModal] = useState(false);
+
 
   useEffect(() => {
     (async () => {
@@ -305,6 +335,91 @@ const DayScreen: FC = () => {
     setUserModal(true);
   }
 
+  const openConfirmModal = (item: ITimeItem) => {
+    setTimeItem(item);
+    setConfirmModal(true);
+  };
+
+  const saveConfirmTime = async () => {
+    try {
+      setConfirmModal(false);
+      reduxDispatch(setLoading(true));
+      const newTimeItem = new Time({
+        id: timeItem.id,
+        date: timeItem.date,
+        time: timeItem.time,
+        client: {
+          uid: timeItem.client.uid,
+          confirmed: true,
+        },
+        isReserved: true,
+      });
+      const historyItem = new History({ ...newTimeItem }, 'await');
+      await confirmTime({ ...newTimeItem });
+      await setUserHistory({ ...historyItem });
+      await getDay();
+    } catch (e) {
+      console.log(e);
+    } finally {
+      reduxDispatch(setLoading(false));
+    }
+  }
+
+  const openFinishModal = (time: ITimeItem) => {
+    setTimeItem(time);
+    setFinishModal(true);
+  };
+
+  const closeFinishModal = () => {
+    setFinishModal(false);
+    setWorkComment('');
+    setCost(25);
+    setWorkTime(90);
+  };
+
+  const formateTime = () => {
+    if (workTime < 60) {
+      return `${time}мин.`;
+    } else {
+      const hour = Math.trunc(workTime / 60);
+      const min = workTime % 60;
+      return `${hour}ч. ${min}м.`;
+    }
+  };
+
+  const finishWork = async () => {
+    try {
+      reduxDispatch(setLoading(true));
+      const historyInfo = new HistoryInfo(
+        timeItem,
+        {
+          cost: cost,
+          time: workTime,
+          comment: workComment,
+        }
+      );
+      closeFinishModal();
+      await closeTime({ ...historyInfo });
+      await getDay();
+      toast({
+        title: 'Запись завершена',
+        status: 'success',
+        isClosable: true,
+        duration: 5000,
+        position: 'top',
+      });
+    } catch (e) {
+      console.log(e);
+    } finally {
+      reduxDispatch(setLoading(false));
+    }
+  };
+
+  const openCancelModal = (item: ITimeItem) => {
+    setTimeItem(item);
+    setCancelModal(true);
+  };
+
   return (
     <div className={styles.day}>
       <Header>
@@ -321,12 +436,15 @@ const DayScreen: FC = () => {
             timeList.map(item => (
               <li
                 key={item.id}
-                className={
-                  (item.client.uid || item.isOffline.status) ?
-                    `${styles.timeItem} ${styles.reserved}` : styles.timeItem}>
+                className={`
+                  ${(item.isReserved && !item.client.confirmed && item.client.uid) ? styles.waitConfirm : ''}
+                  ${(item.isReserved && (item.client.confirmed || item.isOffline.status)) ? styles.confirmed : ''}
+                  ${styles.timeItem}
+                `}>
                 <span className={styles.timeItemTime}>
                   {item.time}
                 </span>
+
                 <ul className={styles.btnList}>
 
                   {/* клиент записан через приложение */}
@@ -373,10 +491,10 @@ const DayScreen: FC = () => {
                   }
 
                   {/* подтверждение записи если клиент записан */}
-                  {(item.client.uid && !item.client.confirmed) &&
+                  {item.client.uid &&
                     <li className={styles.btnListItem}>
                       <IconButton
-                        onClick={() => console.log('подтвердить запись')}
+                        onClick={() => item.client.confirmed ? openFinishModal(item) : openConfirmModal(item)}
                         variant='outline'
                         colorScheme='whiteAlpha'
                         aria-label='btn'
@@ -387,7 +505,7 @@ const DayScreen: FC = () => {
                     </li>
                   }
 
-                  {/* блок редактирования записи с клиентом */}
+                  {/* блок редактирования записи с оффлайн клиентом */}
                   {!item.client.uid &&
                     <li className={styles.btnListItem}>
                       <IconButton
@@ -413,9 +531,27 @@ const DayScreen: FC = () => {
                     </li>
                   }
 
+                  {/* завершение записи оффлайн клиента */}
+                  {item.isOffline.status &&
+                    <li className={styles.btnListItem}>
+                      <IconButton
+                        onClick={() => openFinishModal(item)}
+                        variant='outline'
+                        colorScheme='whiteAlpha'
+                        aria-label='btn'
+                        size={'xs'}
+                        color="#fff"
+                        icon={<CheckIcon />}
+                      />
+                    </li>
+                  }
+
                   <li className={styles.btnListItem}>
                     <IconButton
-                      onClick={() => getDeleteConfirm(item)}
+                      onClick={() => item.isReserved ?
+                        openCancelModal(item)
+                        :
+                        getDeleteConfirm(item)}
                       variant='outline'
                       colorScheme='whiteAlpha'
                       aria-label='btn'
@@ -610,6 +746,171 @@ const DayScreen: FC = () => {
               value='закрыть'
               dark={true}
               handleClick={() => setUserModal(false)} />
+          </div>
+        </div>
+      </ModalConteiner>
+
+      {/* подтверждение */}
+      <ModalConteiner
+        isOpen={confirmModal}
+        onClose={() => setConfirmModal(false)}>
+        <div className={styles.cancelWrapper}>
+          <div className={styles.confirmTitle}>
+            <span>подтвердить запись на {`${timeItem.date.formate} в ${timeItem.time}`}</span>
+          </div>
+          <div className={styles.confirmBtn}>
+            <DefaultBtn
+              handleClick={saveConfirmTime}
+              dark={true}
+              type='button'
+              value='подтвердить' />
+            <DefaultBtn
+              handleClick={() => setConfirmModal(false)}
+              dark={true}
+              type='button'
+              value='закрыть' />
+          </div>
+        </div>
+      </ModalConteiner>
+
+      {/* завершение записи */}
+      <ModalConteiner
+        isOpen={finishModal}
+        onClose={closeFinishModal}>
+
+        <ul className={styles.confirmList}>
+          <li className={styles.confirmItem}>
+            <h6 className={styles.confirmTitle}>
+              <span>время сеанса</span>
+              <span>{formateTime()}</span>
+            </h6>
+            <RangeSlider
+              defaultValue={[0, workTime]}
+              value={[30, workTime]}
+              min={30}
+              max={200}
+              onChange={(val) => setWorkTime(val[1])}>
+              <RangeSliderTrack bg={'rgba(15, 15, 15, 0.2)'}>
+                <RangeSliderFilledTrack bg={'rgba(15, 15, 15, 0.8)'} />
+              </RangeSliderTrack>
+              <RangeSliderThumb defaultValue={workTime} index={1} />
+            </RangeSlider>
+          </li>
+          <li className={styles.confirmItem}>
+            <h6 className={styles.confirmTitle}>
+              <span>стоимость работы</span>
+              <span>{cost}руб.</span>
+            </h6>
+            <RangeSlider
+              defaultValue={[0, cost]}
+              value={[10, cost]}
+              min={10}
+              max={100}
+              onChange={(val) => setCost(val[1])}>
+              <RangeSliderTrack bg={'rgba(15, 15, 15, 0.2)'}>
+                <RangeSliderFilledTrack bg={'rgba(15, 15, 15, 0.8)'} />
+              </RangeSliderTrack>
+              <RangeSliderThumb defaultValue={cost} index={1} />
+            </RangeSlider>
+          </li>
+          <li className={styles.confirmItem}>
+            <h6 className={styles.confirmTitle}>
+              <span>комментарий</span>
+              <span></span>
+            </h6>
+            <FormInput
+              value={workComment}
+              placeholder='Комментарий...'
+              onChange={(e) => setWorkComment(e.target.value)} />
+          </li>
+        </ul>
+
+        <div className={styles.confirmBtn}>
+          <DefaultBtn
+            handleClick={finishWork}
+            dark={true}
+            type='button'
+            value='завершить' />
+          <DefaultBtn
+            handleClick={closeFinishModal}
+            dark={true}
+            type='button'
+            value='отмена' />
+        </div>
+      </ModalConteiner>
+
+      {/* отмена записи */}
+      <ModalConteiner
+        isOpen={cancelModal}
+        onClose={() => setCancelModal(false)}>
+        <div className={styles.cancelWrapper}>
+          {
+            timeItem.client.uid &&
+            <div className={styles.cancelBtn}>
+              <div className={styles.cancelTitle}>
+                <span>отменить с пометкой</span>
+                <Popover placement='auto-start'>
+                  <PopoverTrigger>
+                    <button
+                      type="button">
+                      <InfoIcon />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent>
+                    <PopoverArrow />
+                    <PopoverCloseButton />
+                    <PopoverBody
+                      className={styles.popover}>
+                      <p className={styles.cancelBody}>
+                        Запись удалится, а пометка о отмененной записи будет занесена в историю клиента
+                      </p>
+                    </PopoverBody>
+                  </PopoverContent>
+                </Popover>
+              </div>
+              <DefaultBtn
+                handleClick={() => console.log('с пометкой')}
+                dark={true}
+                type='button'
+                value='отменить' />
+            </div>
+          }
+          <div className={styles.cancelBtn}>
+            <div className={styles.cancelTitle}>
+              <span>отменить без пометки</span>
+              <Popover
+                placement='auto-start' >
+                <PopoverTrigger>
+                  <button
+                    type="button"
+                    className={styles.infoBtn}>
+                    <InfoIcon />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent>
+                  <PopoverArrow />
+                  <PopoverCloseButton />
+                  <PopoverBody
+                    className={styles.popover} >
+                    <p className={styles.cancelBody}>
+                      Запись вернется в статус свободной, а пометка о отмененной записи не будет занесена в историю клиента
+                    </p>
+                  </PopoverBody>
+                </PopoverContent>
+              </Popover>
+            </div>
+            <DefaultBtn
+              handleClick={() => console.log('без пометки')}
+              dark={true}
+              type='button'
+              value='отменить' />
+          </div>
+          <div className={styles.cancelClose}>
+            <DefaultBtn
+              handleClick={() => setCancelModal(false)}
+              dark={true}
+              type='button'
+              value='закрыть' />
           </div>
         </div>
       </ModalConteiner>

@@ -33,7 +33,7 @@
   &List {
     list-style: none;
 
-    &Item+&Item {
+    &Item + &Item {
       margin-top: 15px;
     }
   }
@@ -90,15 +90,31 @@
     align-items: center;
     justify-content: space-between;
     background-color: $white20;
+    position: relative;
 
-    &.reserved {
-      box-shadow: 0 0 15px $white50;
+    &.confirmed {
+      background-color: $green20;
+      border-color: $green80;
+    }
+
+    &.waitConfirm {
+      background-color: $yellow20;
+      border-color: $yellow80;
     }
 
     &Time {
       font-size: 20px;
       font-weight: 700;
       color: $white;
+    }
+
+    &Status {
+      color: $white;
+      position: absolute;
+      width: 180px;
+      display: block;
+      left: calc(50% - 90px);
+      text-align: center;
     }
   }
 }
@@ -109,7 +125,7 @@
     display: flex;
     align-items: center;
 
-    &Item+&Item {
+    &Item + &Item {
       margin-left: 20px;
     }
   }
@@ -143,5 +159,30 @@
     font-size: 16px;
     font-weight: 700;
     margin-bottom: 15px;
+  }
+}
+
+.confirm {
+  &List {
+    list-style: none;
+  }
+  &Item {
+    margin: 15px 0;
+  }
+  &Title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+
+  &Btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 25px;
   }
 }
