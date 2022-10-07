@@ -1,21 +1,16 @@
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, User as FBUser } from "firebase/auth";
-import { collection, deleteField, doc, getDoc, getDocs, query, setDoc, updateDoc, where } from "firebase/firestore";
+import { signOut } from "firebase/auth";
+import { collection, deleteField, doc, getDoc, getDocs, query, setDoc, updateDoc } from "firebase/firestore";
 import { IHistoryItem, ITimeItem, IUser } from "../../interfaces";
 import { setCurrentUserInfo } from "../../store";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { app, authentification, DB } from "../firebase";
-import { History, User, userConverter } from "../services/userService";
-import useReserve from "./reserveController";
+import { authentification, DB } from "../firebase";
+import { User, userConverter } from "../services/userService";
 
 export default function useAuth() {
-    const appState = useAppSelector(s => s.AppStore);
     const reduxDispatch = useAppDispatch();
     const auth = authentification;
 
     const userRef = collection(DB, "user");
-    const dayRef = collection(DB, 'day');
-
-    const { deleteReserve } = useReserve();
 
     const errorHandler = (error: any) => {
         interface IError {
@@ -136,6 +131,16 @@ export default function useAuth() {
         }
     };
 
+    const removeUserHistory = async (time: ITimeItem) => {
+        try {
+            await updateDoc(doc(userRef, time.client.uid), {
+                ['history.' + [time.id]]: deleteField(),
+            });
+        } catch (e) {
+            errorHandler(e);
+        }
+    };
+
     return {
         getUserInfo,
         getCurrentUser,
@@ -148,5 +153,6 @@ export default function useAuth() {
         setDescription,
 
         setUserHistory,
+        removeUserHistory,
     }
 }

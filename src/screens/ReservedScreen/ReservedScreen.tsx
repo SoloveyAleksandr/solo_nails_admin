@@ -37,7 +37,8 @@ import {
 import { NavLink } from 'react-router-dom';
 import { Time } from '../../firebase/services/timeService';
 import styles from './ReservedScreen.module.scss';
-import { HistoryInfo } from '../../firebase/services/userService';
+import { History, HistoryInfo } from '../../firebase/services/userService';
+import useAuth from '../../firebase/controllers/userController';
 
 const ReservedScreen: FC = () => {
   const reduxDispatch = useAppDispatch();
@@ -47,8 +48,14 @@ const ReservedScreen: FC = () => {
     setTimeToDay,
     setTimeToFreeTime,
     removeTimeFromReserves,
+    removeTimeFromDay,
     closeTime,
   } = useTime();
+
+  const {
+    removeUserHistory,
+    setUserHistory,
+  } = useAuth();
 
   const [reservedList, setReservedList] = useState<IReserveItem[]>([]);
   const [userModal, setUserModal] = useState(false);
@@ -111,18 +118,40 @@ const ReservedScreen: FC = () => {
     setCancelModal(true);
   };
 
-  const cancelReserve = async () => {
+  const cancelReserve = async (withMark: boolean) => {
     try {
-      reduxDispatch(setLoading(true));
       setCancelModal(false);
+      reduxDispatch(setLoading(true));
       const newTimeItem = new Time({
         id: timeItem.id,
         date: timeItem.date,
         time: timeItem.time,
       });
-      await setTimeToDay({ ...newTimeItem });
-      await setTimeToFreeTime({ ...newTimeItem });
-      await removeTimeFromReserves({ ...timeItem });
+      if (withMark) {
+        const historiItem = new History(timeItem, 'canceled');
+        await removeTimeFromReserves(timeItem);
+        await removeTimeFromDay(timeItem);
+        await setUserHistory({ ...historiItem });
+        toast({
+          title: `Запись на ${timeItem.date.formate} ${timeItem.time} удалена с занесением в историю клиента`,
+          status: 'success',
+          isClosable: true,
+          duration: 5000,
+          position: 'top',
+        });
+      } else {
+        await setTimeToDay({ ...newTimeItem });
+        await setTimeToFreeTime({ ...newTimeItem });
+        await removeTimeFromReserves(timeItem);
+        await removeUserHistory(timeItem);
+        toast({
+          title: `Запись на ${timeItem.date.formate} ${timeItem.time} снова свободна`,
+          status: 'success',
+          isClosable: true,
+          duration: 5000,
+          position: 'top',
+        });
+      }
       await getReserves();
     } catch (e) {
       console.log(e);
@@ -387,7 +416,7 @@ const ReservedScreen: FC = () => {
                 </Popover>
               </div>
               <DefaultBtn
-                handleClick={() => setCancelModal(false)}
+                handleClick={() => cancelReserve(true)}
                 dark={true}
                 type='button'
                 value='отменить' />
@@ -418,7 +447,7 @@ const ReservedScreen: FC = () => {
               </Popover>
             </div>
             <DefaultBtn
-              handleClick={cancelReserve}
+              handleClick={() => cancelReserve(false)}
               dark={true}
               type='button'
               value='отменить' />
