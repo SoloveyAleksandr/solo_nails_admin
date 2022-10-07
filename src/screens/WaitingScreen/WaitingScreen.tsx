@@ -8,17 +8,11 @@ import ScreenTitle from '../../components/ScreenTitle/ScreenTitle';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import {
   IconButton,
-  Popover,
-  PopoverArrow,
-  PopoverBody,
-  PopoverCloseButton,
-  PopoverContent,
-  PopoverTrigger,
   useToast,
 } from '@chakra-ui/react';
 import DefaultBtn from '../../components/DefaultBtn/DefaultBtn';
 import ModalConteiner from '../../components/ModalContainer/ModalContainer';
-import { CheckIcon, CloseIcon, ExternalLinkIcon, InfoIcon, PhoneIcon } from '@chakra-ui/icons';
+import { CheckIcon, CloseIcon, ExternalLinkIcon } from '@chakra-ui/icons';
 import { setLoading, setSelectedDate, setSelectedUserUID } from '../../store';
 import { IReserveItem, ITimeItem } from '../../interfaces';
 import useTime from '../../firebase/controllers/timeController';
@@ -109,6 +103,13 @@ const WaitingScreen: FC = () => {
       await removeTimeFromDay(timeItem);
       await removeTimeFromWaiting(timeItem);
       await getWaiting();
+      toast({
+        title: `Запись на ${timeItem.date.formate} ${timeItem.time} отклонена`,
+        status: 'success',
+        isClosable: true,
+        duration: 5000,
+        position: 'top',
+      });
     } catch (e) {
       console.log(e);
     } finally {
@@ -139,6 +140,13 @@ const WaitingScreen: FC = () => {
       await confirmTime({ ...newTimeItem });
       await setUserHistory({ ...historyItem });
       await getWaiting();
+      toast({
+        title: `Запись на ${timeItem.date.formate} ${timeItem.time} подтверждена`,
+        status: 'success',
+        isClosable: true,
+        duration: 5000,
+        position: 'top',
+      });
     } catch (e) {
       console.log(e);
     } finally {
