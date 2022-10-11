@@ -140,10 +140,12 @@ const ReservedScreen: FC = () => {
           position: 'top',
         });
       } else {
+        if (timeItem.client.uid) {
+          await removeUserHistory(timeItem);
+        }
         await setTimeToDay({ ...newTimeItem });
         await setTimeToFreeTime({ ...newTimeItem });
         await removeTimeFromReserves(timeItem);
-        await removeUserHistory(timeItem);
         toast({
           title: `Запись на ${timeItem.date.formate} ${timeItem.time} снова свободна`,
           status: 'success',
