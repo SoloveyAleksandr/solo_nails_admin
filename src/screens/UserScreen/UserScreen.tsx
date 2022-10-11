@@ -140,10 +140,10 @@ const UserScreen: FC = () => {
           </li>
         </ul>
 
-        <div className={styles.keyWrapper}>
+        {/* <div className={styles.keyWrapper}>
           <span className={styles.keyTitle}>Реферальный ключ:</span>
           <span className={styles.key}>{user?.privateKey}</span>
-        </div>
+        </div> */}
 
         <div className={styles.history}>
           <span className={styles.historyTitle}>
@@ -164,7 +164,7 @@ const UserScreen: FC = () => {
           </ul>
         </div>
 
-        <div className={styles.history}>
+        {/* <div className={styles.history}>
           <span className={styles.historyTitle}>
             <span>Рефералы</span>
             <span>({user?.refferals.length})</span>
@@ -179,7 +179,7 @@ const UserScreen: FC = () => {
               </li>
             ))}
           </ul>
-        </div>
+        </div> */}
 
         <div className={styles.commentWrapper}>
           <span className={styles.historyTitle}>

@@ -62,7 +62,7 @@ const AllUsers: FC = () => {
       </Header>
 
       <ScreenTitle
-        title='все пользователи' />
+        title={`все пользователи (${users.length})`} />
 
       <Container>
         <div className={styles.searchWrapper}>

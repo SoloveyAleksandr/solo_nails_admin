@@ -169,10 +169,10 @@ const MyAccount: FC = () => {
           </li>
         </ul>
 
-        <div className={styles.keyWrapper}>
+        {/* <div className={styles.keyWrapper}>
           <span className={styles.keyTitle}>Реферальный ключ:</span>
           <span className={styles.key}>{appState.currentUserInfo.privateKey}</span>
-        </div>
+        </div> */}
 
         <div className={styles.history}>
           <span className={styles.historyTitle}>
@@ -191,7 +191,7 @@ const MyAccount: FC = () => {
           </ul>
         </div>
 
-        <div className={styles.history}>
+        {/* <div className={styles.history}>
           <span className={styles.historyTitle}>
             <span>Рефералы</span>
             <span>({appState.currentUserInfo.refferals.length})</span>
@@ -206,7 +206,7 @@ const MyAccount: FC = () => {
               </li>
             ))}
           </ul>
-        </div>
+        </div> */}
       </Container>
 
       <ModalConteiner
