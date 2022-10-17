@@ -250,16 +250,17 @@ const Services: FC = () => {
                     className={styles.modalInput}
                     value={el.value}
                     onChange={(e) => changeService(index, e.target.value)} />
-                  <IconButton
-                    className={styles.modalInputBtn}
-                    onClick={() => deleteService(el.id)}
-                    borderRadius={'50%'}
-                    size={'xs'}
-                    color={'#000'}
-                    colorScheme='blackAlpha'
-                    variant={'outline'}
-                    aria-label='add time'
-                    icon={<CloseIcon />} />
+                  <div className={styles.modalInputBtnBox}>
+                    <IconButton
+                      className={styles.modalInputBtn}
+                      onClick={() => deleteService(el.id)}
+                      borderRadius={'50%'}
+                      size={'xs'}
+                      colorScheme='blackAlpha'
+                      variant={'solid'}
+                      aria-label='add time'
+                      icon={<CloseIcon />} />
+                  </div>
                 </li>
               ))
             }
