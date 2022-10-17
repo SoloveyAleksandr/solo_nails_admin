@@ -23,6 +23,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+
   &.current {
     font-size: 28px;
     color: $white;
