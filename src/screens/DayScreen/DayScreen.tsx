@@ -55,7 +55,11 @@ const DayScreen: FC = () => {
     getDay,
   } = useDay();
 
-  const { setUserHistory } = useAuth();
+  const {
+    setUserHistory,
+    setUserReserve,
+    removeUserReserve,
+  } = useAuth();
 
   const toast = useToast();
   const appState = useAppSelector(store => store.AppStore);

@@ -42,6 +42,8 @@ const WaitingScreen: FC = () => {
 
   const {
     setUserHistory,
+    setUserReserve,
+    removeUserReserve,
   } = useAuth();
 
   const [reservedList, setReservedList] = useState<IReserveItem[]>([]);
@@ -102,6 +104,8 @@ const WaitingScreen: FC = () => {
       setCancelModal(false);
       await removeTimeFromDay(timeItem);
       await removeTimeFromWaiting(timeItem);
+      await removeUserReserve(timeItem);
+
       await getWaiting();
       toast({
         title: `Запись на ${timeItem.date.formate} ${timeItem.time} отклонена`,
@@ -139,7 +143,10 @@ const WaitingScreen: FC = () => {
       const historyItem = new History({ ...newTimeItem }, 'await');
       await confirmTime({ ...newTimeItem });
       await setUserHistory({ ...historyItem });
+      await setUserReserve({ ...newTimeItem });
+
       await getWaiting();
+
       toast({
         title: `Запись на ${timeItem.date.formate} ${timeItem.time} подтверждена`,
         status: 'success',

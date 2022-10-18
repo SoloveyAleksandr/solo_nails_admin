@@ -105,3 +105,16 @@ export class HistoryInfo {
     this.info = info;
   }
 }
+
+export class UserReserve {
+  id: string;
+  uid: string;
+  time: ITimeItem;
+  isConfirmed: boolean;
+  constructor(time: ITimeItem, status?: boolean) {
+    this.id = time.id;
+      this.uid = time.client.uid;
+      this.time = time;
+      this.isConfirmed = status || false;
+  }
+};

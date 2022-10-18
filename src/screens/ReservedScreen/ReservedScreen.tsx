@@ -55,6 +55,7 @@ const ReservedScreen: FC = () => {
   const {
     removeUserHistory,
     setUserHistory,
+    removeUserReserve,
   } = useAuth();
 
   const [reservedList, setReservedList] = useState<IReserveItem[]>([]);
@@ -154,6 +155,8 @@ const ReservedScreen: FC = () => {
           position: 'top',
         });
       }
+
+      await removeUserReserve(timeItem);
       await getReserves();
     } catch (e) {
       console.log(e);
@@ -197,7 +200,10 @@ const ReservedScreen: FC = () => {
       );
       closeConfirmModal();
       await closeTime({ ...historyInfo });
+
+      await removeUserReserve(timeItem);
       await getReserves();
+      
       toast({
         title: 'Запись завершена',
         status: 'success',
