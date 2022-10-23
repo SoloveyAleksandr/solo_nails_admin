@@ -36,6 +36,7 @@ import { Time } from '../../firebase/services/timeService';
 
 import styles from './FreeTime.module.scss';
 import FormInput from '../../components/FormInput/FormInput';
+import { sortByTime } from '../../firebase/services/dayService';
 
 const FreeTime: FC = () => {
   const appState = useAppSelector(store => store.AppStore);
@@ -283,7 +284,7 @@ const FreeTime: FC = () => {
                 as={'ul'}
                 className={styles.timeList} >
                 {
-                  Object.values(day.timeList).sort((a, b) => Number(a.date.full) - Number(b.date.full)).map(item => (
+                  Object.values(day.timeList).sort((a, b) => sortByTime(a, b)).map(item => (
                     <li
                       key={item.id}
                       className={styles.timeItem}>
