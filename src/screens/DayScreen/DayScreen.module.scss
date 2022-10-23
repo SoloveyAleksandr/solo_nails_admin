@@ -13,6 +13,9 @@
     position: fixed;
     bottom: 25px;
     right: 25px;
+    display: flex;
+    align-items: center;
+    gap: 25px;
   }
 }
 
@@ -185,4 +188,8 @@
     justify-content: space-between;
     margin-top: 25px;
   }
+}
+
+*._center {
+  justify-content: center;
 }
