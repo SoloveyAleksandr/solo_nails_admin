@@ -121,6 +121,13 @@ const Calendar: FC = () => {
           </li>
           <li
             className={styles.menuItem}>
+            <NavLink
+              to={'/settings'}>
+              настройки
+            </NavLink>
+          </li>
+          <li
+            className={styles.menuItem}>
             <a
               className={styles.menuLink}
               href={'tel: +375257128767'}>

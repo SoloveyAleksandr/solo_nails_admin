@@ -12,6 +12,7 @@ import Login from "./screens/Login/Login";
 import MyAccount from "./screens/MyAccount/MyAccount";
 import ReservedScreen from "./screens/ReservedScreen/ReservedScreen";
 import Services from "./screens/Services/Services";
+import SettingsScreen from "./screens/SettingsScreen/SettingsScreen";
 import UserScreen from "./screens/UserScreen/UserScreen";
 import WaitingScreen from "./screens/WaitingScreen/WaitingScreen";
 import { useAppSelector } from "./store/hooks";
@@ -32,6 +33,7 @@ function AppRouter() {
         <Route path="user" element={<UserScreen />} />
         <Route path="all-users" element={<AllUsers />} />
         <Route path="history" element={<HistoryScreen />} />
+        <Route path="settings" element={<SettingsScreen />} />
         <Route path="/*" element={<Navigate to={'/calendar'} />}></Route>
       </Routes>
     )

@@ -64,6 +64,28 @@ export default function useTime() {
     }
   };
 
+  const setTimeTemplateToDay = async (date: string, template: { [key: string]: ITimeItem }) => {
+    try {
+      const timeRef = doc(dayRef, date);
+      await updateDoc(timeRef, {
+        'timeList': template
+      });
+    } catch (e) {
+      errorHandler(e);
+    }
+  };
+
+  const setTimeTemplateToFreeTime = async (date: string, template: { [key: string]: ITimeItem }) => {
+    try {
+      const timeRef = doc(freeTimeRef, date);
+      await updateDoc(timeRef, {
+        'timeList': template
+      })
+    } catch (e) {
+      errorHandler(e);
+    }
+  };
+
   const setTimeToReserves = async (time: ITimeItem) => {
     try {
       const id = time.id;
@@ -252,6 +274,9 @@ export default function useTime() {
     setTimeToFreeTime,
     setTimeToReserves,
     setTimeToWaiting,
+
+    setTimeTemplateToDay,
+    setTimeTemplateToFreeTime,
 
     removeTimeFromDay,
     removeTimeFromFreeTime,
