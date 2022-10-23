@@ -50,6 +50,10 @@
       {
         "source": "/history",
         "destination": "/index.html"
+      },
+      {
+        "source": "/settings",
+        "destination": "/index.html"
       }
     ]
   }
