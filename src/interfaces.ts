@@ -112,3 +112,8 @@ export interface IUserReserve {
   time: ITimeItem;
   isConfirmed: boolean;
 }
+
+export interface ITemplateTimeItem {
+  id: string,
+  time: string,
+}

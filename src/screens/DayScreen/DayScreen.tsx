@@ -20,7 +20,7 @@ import {
   Switch,
   useToast,
 } from '@chakra-ui/react';
-import { AddIcon, CheckIcon, CloseIcon, InfoIcon, PhoneIcon } from '@chakra-ui/icons';
+import { AddIcon, CheckIcon, CloseIcon, DownloadIcon, InfoIcon, PhoneIcon } from '@chakra-ui/icons';
 import { setLoading, setSelectedUserUID } from "../../store";
 import useDay from "../../firebase/controllers/dayController";
 import ModalConteiner from "../../components/ModalContainer/ModalContainer";
@@ -31,17 +31,21 @@ import { Time } from "../../firebase/services/timeService";
 import { sortByTime } from "../../firebase/services/dayService";
 import Container from "../../components/Container/Container";
 import { NavLink } from "react-router-dom";
-
-import styles from './DayScreen.module.scss';
 import { ITimeItem } from "../../interfaces";
 import { History, HistoryInfo } from "../../firebase/services/userService";
 import useAuth from "../../firebase/controllers/userController";
+import { useSettings } from "../../firebase/controllers/settingsController";
+
+import styles from './DayScreen.module.scss';
 
 const DayScreen: FC = () => {
   const {
     setTimeToDay,
     setTimeToFreeTime,
     setTimeToReserves,
+
+    setTimeTemplateToDay,
+    setTimeTemplateToFreeTime,
 
     removeTimeFromDay,
     removeTimeFromFreeTime,
@@ -61,9 +65,13 @@ const DayScreen: FC = () => {
     removeUserReserve,
   } = useAuth();
 
+  const { getTimeTemplate } = useSettings();
+
   const toast = useToast();
   const appState = useAppSelector(store => store.AppStore);
   const reduxDispatch = useAppDispatch();
+
+  const [templateModal, setTemplateModal] = useState(false);
 
   const [timeForm, setTimeForm] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(false);
@@ -424,6 +432,31 @@ const DayScreen: FC = () => {
     setCancelModal(true);
   };
 
+  const setTemplateTime = async () => {
+    try {
+      setTemplateModal(false);
+      reduxDispatch(setLoading(true));
+      const template = await getTimeTemplate();
+      const newTimeList: { [key: string]: ITimeItem } = {};
+      template &&
+        Object.values(template.timeList).forEach(el => {
+          const newTimeItem = new Time({
+            time: el.time,
+            date: appState.selectedDate,
+          });
+          const id = newTimeItem.id
+          newTimeList[id] = { ...newTimeItem }
+        });
+      await setTimeTemplateToDay(appState.selectedDate.full.toString(), newTimeList);
+      await setTimeTemplateToFreeTime(appState.selectedDate.full.toString(), newTimeList);
+      await getDay();
+    } catch (e) {
+      console.log(e);
+    } finally {
+      reduxDispatch(setLoading(false));
+    }
+  };
+
   return (
     <div className={styles.day}>
       <Header>
@@ -435,6 +468,7 @@ const DayScreen: FC = () => {
         title={appState.selectedDate.formate} />
 
       <Container>
+
         <ul className={styles.timeList}>
           {
             timeList.map(item => (
@@ -572,6 +606,18 @@ const DayScreen: FC = () => {
       </Container >
 
       <div className={styles.plusBtnWrapper}>
+        {
+          timeList.length === 0 &&
+          <IconButton
+            onClick={() => setTemplateModal(true)}
+            w={'40px'}
+            h={'40px'}
+            borderRadius={'50%'}
+            colorScheme='whiteAlpha'
+            aria-label='add time'
+            icon={<DownloadIcon />}
+          />
+        }
         <IconButton
           onClick={() => setTimeForm(true)}
           w={'60px'}
@@ -750,6 +796,29 @@ const DayScreen: FC = () => {
               value='закрыть'
               dark={true}
               handleClick={() => setUserModal(false)} />
+          </div>
+        </div>
+      </ModalConteiner>
+
+      {/* подтверждение добавления шаблона */}
+      <ModalConteiner
+        isOpen={templateModal}
+        onClose={() => setTemplateModal(false)}>
+        <div className={styles.cancelWrapper}>
+          <div className={`${styles.confirmTitle} ${styles._center}`}>
+            <span>загрузить шаблон времени?</span>
+          </div>
+          <div className={styles.confirmBtn}>
+            <DefaultBtn
+              handleClick={setTemplateTime}
+              dark={true}
+              type='button'
+              value='загрузить' />
+            <DefaultBtn
+              handleClick={() => setTemplateModal(false)}
+              dark={true}
+              type='button'
+              value='закрыть' />
           </div>
         </div>
       </ModalConteiner>
