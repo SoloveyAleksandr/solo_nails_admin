@@ -1,5 +1,5 @@
 import { AddIcon, CloseIcon } from "@chakra-ui/icons";
-import { IconButton, Input } from "@chakra-ui/react";
+import { Checkbox, IconButton, Input } from "@chakra-ui/react";
 import { FC, useEffect, useState } from "react";
 import BackBtn from "../../components/BackBtn/BackBtn";
 import Container from "../../components/Container/Container";
@@ -34,11 +34,13 @@ const Services: FC = () => {
   }[]>([]);
   const [title, setTitle] = useState('');
   const [price, setPrice] = useState('');
+  const [isMain, setIsMain] = useState(false);
   const [id, setId] = useState('');
   const [priceItem, setPriceItem] = useState<IService>({
     id,
     price,
     title,
+    isMain,
     servicesList,
   });
   const [deleteConfirm, setDeleteConfirm] = useState(false);
@@ -77,6 +79,7 @@ const Services: FC = () => {
     setPrice('');
     setId('');
     setServicesList([]);
+    setIsMain(false);
   };
 
   const changeService = (index: number, value: string) => {
@@ -92,10 +95,11 @@ const Services: FC = () => {
 
   const savePrice = async () => {
     try {
-      const item = {
+      const item: IService = {
         id: id || uuid().slice(0, 8),
         title,
         price,
+        isMain,
         servicesList,
       }
       closeModal();
@@ -274,6 +278,13 @@ const Services: FC = () => {
               info={'стоимость пакета услуг'}
               onChange={(e) => setPrice(e.target.value)} />
           </div>
+
+          <label className={styles.modalCheckbox}>
+            отдельная услуга
+            <Checkbox
+              onChange={e => setIsMain(e.target.checked)} checked={isMain}
+              size={'lg'}></Checkbox>
+          </label>
 
           <div className={styles.modalBtnWrapper}>
             <DefaultBtn

@@ -39,6 +39,7 @@ import { Time } from '../../firebase/services/timeService';
 import styles from './ReservedScreen.module.scss';
 import { History, HistoryInfo } from '../../firebase/services/userService';
 import useAuth from '../../firebase/controllers/userController';
+import { sortByTime } from '../../firebase/services/dayService';
 
 const ReservedScreen: FC = () => {
   const reduxDispatch = useAppDispatch();
@@ -203,7 +204,7 @@ const ReservedScreen: FC = () => {
 
       await removeUserReserve(timeItem);
       await getReserves();
-      
+
       toast({
         title: 'Запись завершена',
         status: 'success',
@@ -257,12 +258,13 @@ const ReservedScreen: FC = () => {
                 as={'ul'}
                 className={styles.timeList} >
                 {
-                  Object.values(day.timeList).sort((a, b) => Number(a.date.full) - Number(b.date.full)).map(item => (
+                  Object.values(day.timeList).sort((a, b) => sortByTime(a, b)).map(item => (
                     <li
                       key={item.id}
                       className={styles.timeItem}>
                       <InfoContainer>
                         <span className={styles.timeItemTitle}>{item.time}</span>
+                        <span className={styles.timeItemTitle}>{item.client.service || ''}</span>
                         <div className={styles.btnWrapper}>
                           {item.client.uid ?
                             <NavLink
