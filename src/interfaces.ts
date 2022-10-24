@@ -33,6 +33,7 @@ export interface ITimeItem {
   client: {
     uid: string,
     confirmed: boolean,
+    service?: string,
   },
   isOffline: {
     status: boolean,
@@ -100,6 +101,7 @@ export interface IService {
   id: string,
   title: string,
   price: string,
+  isMain: boolean,
   servicesList: {
     id: string,
     value: string,

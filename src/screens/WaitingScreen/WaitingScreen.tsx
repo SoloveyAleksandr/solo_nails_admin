@@ -28,6 +28,7 @@ import { NavLink } from 'react-router-dom';
 import { Time } from '../../firebase/services/timeService';
 import useAuth from '../../firebase/controllers/userController';
 import { History } from '../../firebase/services/userService';
+import { sortByTime } from '../../firebase/services/dayService';
 
 const WaitingScreen: FC = () => {
   const appState = useAppSelector(store => store.AppStore);
@@ -200,12 +201,13 @@ const WaitingScreen: FC = () => {
                 as={'ul'}
                 className={styles.timeList} >
                 {
-                  Object.values(day.timeList).sort((a, b) => Number(a.date.full) - Number(b.date.full)).map(item => (
+                  Object.values(day.timeList).sort((a, b) => sortByTime(a, b)).map(item => (
                     <li
                       key={item.id}
                       className={styles.timeItem}>
                       <InfoContainer>
                         <span className={styles.timeItemTitle}>{item.time}</span>
+                        <span className={styles.timeItemTitle}>{item.client.service || ''}</span>
                         <div className={styles.btnWrapper}>
                           <NavLink
                             className={styles.btn}

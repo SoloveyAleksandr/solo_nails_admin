@@ -9,6 +9,7 @@
 .price {
   &List {
     list-style: none;
+    padding-bottom: 100px;
   }
 
   &Item {
@@ -89,6 +90,16 @@
       display: flex;
       align-items: center;
     }
+  }
+
+  &Checkbox {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 25px;
   }
 
   &Input {
