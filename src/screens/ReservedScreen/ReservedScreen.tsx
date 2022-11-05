@@ -502,8 +502,8 @@ const ReservedScreen: FC = () => {
             </h6>
             <RangeSlider
               defaultValue={[0, cost]}
-              value={[5, cost]}
-              min={5}
+              value={[3, cost]}
+              min={3}
               max={70}
               onChange={(val) => setCost(val[1])}>
               <RangeSliderTrack bg={'rgba(15, 15, 15, 0.2)'}>
