@@ -63,6 +63,7 @@ const DayScreen: FC = () => {
     setUserHistory,
     setUserReserve,
     removeUserReserve,
+    removeUserHistory,
   } = useAuth();
 
   const { getTimeTemplate } = useSettings();
@@ -456,6 +457,36 @@ const DayScreen: FC = () => {
       reduxDispatch(setLoading(false));
     }
   };
+
+  const removeWithMark = async () => {
+    try {
+      reduxDispatch(setLoading(true));
+      const historyItem = new History(timeItem, "canceled");
+      await setUserHistory({ ...historyItem });
+      await removeTimeFromDay(timeItem);
+      await getDay();
+      setCancelModal(false);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      reduxDispatch(setLoading(false));
+    }
+  }
+
+  const removeWithoutMark = async () => {
+    try {
+      reduxDispatch(setLoading(true));
+      await removeUserHistory(timeItem);
+      await removeUserReserve(timeItem);
+      await removeTimeFromDay(timeItem);
+      await getDay();
+      setCancelModal(false);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      reduxDispatch(setLoading(false));
+    }
+  }
 
   return (
     <div className={styles.day}>
@@ -942,7 +973,7 @@ const DayScreen: FC = () => {
                 </Popover>
               </div>
               <DefaultBtn
-                handleClick={() => console.log('с пометкой')}
+                handleClick={removeWithMark}
                 dark={true}
                 type='button'
                 value='отменить' />
@@ -966,14 +997,14 @@ const DayScreen: FC = () => {
                   <PopoverBody
                     className={styles.popover} >
                     <p className={styles.cancelBody}>
-                      Запись вернется в статус свободной, а пометка о отмененной записи не будет занесена в историю клиента
+                      Запись удалится, а пометка о отмененной записи не будет занесена в историю клиента
                     </p>
                   </PopoverBody>
                 </PopoverContent>
               </Popover>
             </div>
             <DefaultBtn
-              handleClick={() => console.log('без пометки')}
+              handleClick={removeWithoutMark}
               dark={true}
               type='button'
               value='отменить' />
